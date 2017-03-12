@@ -1,6 +1,14 @@
+import datetime
+
 from django.db import models
+from django import forms
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+from smart_selects.db_fields import ChainedForeignKey
+
+
+SHIFTS = (  ("1st", "1st"),
+            ("2nd", "2nd"))
 
 class Employee(models.Model):
     class Meta:
@@ -9,6 +17,7 @@ class Employee(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=40)
     email = models.EmailField(blank=True)
+    shift = models.CharField(max_length=3, choices=SHIFTS)
     training_level = models.IntegerField(
         validators=[MaxValueValidator(5), MinValueValidator(1)])
 
@@ -27,8 +36,15 @@ class Program(models.Model):
     def __str__(self):
         return self.name
 
+def nospace_validator(value):
+    if " " in value:
+        raise forms.ValidationError("The workcell name cannot contain spaces.")
+
 class Workcell(models.Model):
-    name = models.CharField(max_length=30, primary_key=True)
+    name = models.CharField(
+        max_length=30,
+        validators=[nospace_validator],
+        primary_key=True)
     foam_system = models.CharField(max_length=30)
     cell_leader_1st = models.ForeignKey(
         Employee, related_name="cell_leader_1st")
@@ -58,15 +74,17 @@ class DowntimeCode(models.Model):
 YESNONA = ( ('yes', 'Yes'),
             ('no', 'No'),
             ('na', 'N/A'))
-SHIFTS = (  ("1st", "1st"),
-            ("2nd", "2nd"))
+
+def date_validator(value):
+    if value > datetime.date.today():
+        raise forms.ValidationError("The date cannot be in the future!")
 
 class StartOfShift(models.Model):
     class Meta:
         unique_together = ("date", "shift", "workcell")
 
     workcell = models.ForeignKey(Workcell)
-    date = models.DateField()
+    date = models.DateField(validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
     employee = models.ForeignKey(Employee)
 
@@ -130,7 +148,7 @@ class EndOfShift(models.Model):
         unique_together = ("date", "shift", "workcell")
 
     workcell = models.ForeignKey(Workcell)
-    date = models.DateField()
+    date = models.DateField(validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
     employee = models.ForeignKey(Employee)
 
@@ -186,10 +204,12 @@ class ScrapReport(models.Model):
         unique_together = ("date", "shift", "workcell", "part")
 
     workcell = models.ForeignKey(Workcell)
-    date = models.DateField()
+    date = models.DateField(validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
     employee = models.ForeignKey(Employee)
-    part = models.ForeignKey(Part)
+    part = ChainedForeignKey(Part,
+        chained_field="workcell",
+        chained_model_field="workcell")
 
     bad_mix = models.IntegerField(validators=[MinValueValidator(0)])
     non_fill = models.IntegerField(validators=[MinValueValidator(0)])
@@ -208,7 +228,7 @@ class ScrapReport(models.Model):
 
 class Downtime(models.Model):
     workcell = models.ForeignKey(Workcell)
-    date = models.DateField()
+    date = models.DateField(validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
     employee = models.ForeignKey(Employee)
 
@@ -229,7 +249,7 @@ STATUS = (  ("open", "Open"),
 
 class MaintenanceRequest(models.Model):
     workcell = models.ForeignKey(Workcell)
-    date = models.DateField()
+    date = models.DateField(validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
     created_by = models.ForeignKey(Employee, related_name="created_by")
 

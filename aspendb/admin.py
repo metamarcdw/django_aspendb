@@ -5,9 +5,9 @@ admin.site.site_title = "Aspen Technologies Database"
 admin.site.site_header = "Aspen Technologies Database"
 
 class EmployeeAdmin(admin.ModelAdmin):
-    list_display = ("first_name", "last_name", "email")
+    list_display = ("first_name", "last_name", "shift", "email")
     search_fields = ("first_name", "last_name")
-    ordering = ("last_name", "first_name")
+    ordering = ("shift", "last_name", "first_name")
 
 class PartAdmin(admin.ModelAdmin):
     list_display = ("part_number", "program_name")
@@ -58,3 +58,4 @@ admin.site.register(EndOfShift, EndOfShiftAdmin)
 admin.site.register(ScrapReport, ScrapReportAdmin)
 admin.site.register(Downtime, DowntimeAdmin)
 admin.site.register(MaintenanceRequest, MaintenanceRequestAdmin)
+
