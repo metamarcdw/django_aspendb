@@ -23,10 +23,17 @@ class StartOfShiftAdmin(admin.ModelAdmin):
 
 class EndOfShiftAdmin(admin.ModelAdmin):
     exclude = ("total_shots", "oee", "scrap_percent")
-    list_display = ("date", "shift", "workcell", "oee", "scrap_percent")
+    list_display = (
+        "date", "shift", "workcell", "_oee", "_scrap_percent")
     list_filter = ("date",)
     date_hierarchy = "date"
     ordering = ("date",)
+
+    def _oee(self, obj):
+        return "{}%".format(obj.oee)
+
+    def _scrap_percent(self, obj):
+        return "{}%".format(obj.scrap_percent)
 
 class ScrapReportAdmin(admin.ModelAdmin):
     list_display = ("part", "date", "shift", "workcell")
