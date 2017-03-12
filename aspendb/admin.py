@@ -19,7 +19,7 @@ class StartOfShiftAdmin(admin.ModelAdmin):
     list_display = ("date", "shift", "workcell")
     list_filter = ("date",)
     date_hierarchy = "date"
-    ordering = ("date",)
+    ordering = ("date", "shift")
 
 class EndOfShiftAdmin(admin.ModelAdmin):
     exclude = ("total_shots", "oee", "scrap_percent")
@@ -27,7 +27,7 @@ class EndOfShiftAdmin(admin.ModelAdmin):
         "date", "shift", "workcell", "_oee", "_scrap_percent")
     list_filter = ("date",)
     date_hierarchy = "date"
-    ordering = ("date",)
+    ordering = ("date", "shift")
 
     def _oee(self, obj):
         return "{}%".format(obj.oee)
