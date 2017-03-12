@@ -38,7 +38,8 @@ class Program(models.Model):
 
 def nospace_validator(value):
     if " " in value:
-        raise forms.ValidationError("The workcell name cannot contain spaces.")
+        raise forms.ValidationError(
+            "The workcell name cannot contain spaces.")
 
 class Workcell(models.Model):
     name = models.CharField(
@@ -47,9 +48,9 @@ class Workcell(models.Model):
         primary_key=True)
     foam_system = models.CharField(max_length=30)
     cell_leader_1st = models.ForeignKey(
-        Employee, related_name="cell_leader_1st")
+        Employee, related_name="cell_leader_1st", blank=True, null=True)
     cell_leader_2nd = models.ForeignKey(
-        Employee, related_name="cell_leader_2nd")
+        Employee, related_name="cell_leader_2nd", blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -182,7 +183,8 @@ class EndOfShift(models.Model):
     comments = models.CharField(max_length=500, blank=True)
 
     total_shots = models.IntegerField()
-    oee = models.FloatField()
+    oee = models.DecimalField(max_digits=5, decimal_places=2)
+    scrap_percent = models.DecimalField(max_digits=5, decimal_places=2)
 
     def get_total_shots(self):
         return self.ending_shot - self.starting_shot
@@ -190,9 +192,13 @@ class EndOfShift(models.Model):
     def get_oee(self):
         return (self.total_shots / self.scheduled_shots) * 100
 
+    def get_scrap_percent(self):
+        return (self.total_scrap / self.total_shots) * 100
+
     def save(self, *args, **kwargs):
         self.total_shots = self.get_total_shots()
         self.oee = self.get_oee()
+        self.scrap_percent = self.get_scrap_percent()
         super().save(*args, **kwargs)
 
     def __str__(self):

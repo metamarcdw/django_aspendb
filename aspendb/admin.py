@@ -7,7 +7,7 @@ admin.site.site_header = "Aspen Technologies Database"
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ("first_name", "last_name", "shift", "email")
     search_fields = ("first_name", "last_name")
-    ordering = ("shift", "last_name", "first_name")
+    ordering = ("last_name", "first_name")
 
 class PartAdmin(admin.ModelAdmin):
     list_display = ("part_number", "program_name")
@@ -22,8 +22,8 @@ class StartOfShiftAdmin(admin.ModelAdmin):
     ordering = ("date",)
 
 class EndOfShiftAdmin(admin.ModelAdmin):
-    exclude = ("total_shots", "oee")
-    list_display = ("date", "shift", "workcell")
+    exclude = ("total_shots", "oee", "scrap_percent")
+    list_display = ("date", "shift", "workcell", "oee", "scrap_percent")
     list_filter = ("date",)
     date_hierarchy = "date"
     ordering = ("date",)
