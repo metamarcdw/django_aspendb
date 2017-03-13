@@ -15,8 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from aspendb.views import EmployeeAutocomplete
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^chaining/', include('smart_selects.urls')),
+    url(
+        r'^employee-autocomplete/$',
+        EmployeeAutocomplete.as_view(),
+        name='employee-autocomplete',
+    ),
 ]
