@@ -259,10 +259,10 @@ class MaintenanceRequest(models.Model):
     shift = models.CharField(max_length=3, choices=SHIFTS)
     created_by = models.ForeignKey(Employee, related_name="created_by")
 
+    approved_by = models.ForeignKey(Employee, related_name="approved_by")
     department = models.ForeignKey(Department)
     problem = models.CharField(max_length=100)
     urgency = models.IntegerField(choices=URGENCY)
-    approved_by = models.ForeignKey(Employee, related_name="approved_by")
     status = models.CharField(max_length=30, choices=STATUS)
 
     def __str_(self):
