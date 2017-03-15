@@ -47,6 +47,7 @@ class Workcell(models.Model):
         validators=[nospace_validator],
         primary_key=True)
     foam_system = models.CharField(max_length=30)
+    turns_per_hour = models.DecimalField(max_digits=4, decimal_places=2, default=10)
     cell_leader_1st = models.ForeignKey(
         Employee, related_name="cell_leader_1st", blank=True, null=True)
     cell_leader_2nd = models.ForeignKey(
@@ -79,6 +80,33 @@ YESNONA = ( ('yes', 'Yes'),
 def date_validator(value):
     if value > datetime.date.today():
         raise forms.ValidationError("The date cannot be in the future!")
+
+class ProductionSchedule(models.Model):
+    class Meta:
+        unique_together = ("date", "shift", "workcell", "part")
+
+    workcell = models.ForeignKey(Workcell)
+    date = models.DateField(validators=[date_validator])
+    shift = models.CharField(max_length=3, choices=SHIFTS)
+    part = ChainedForeignKey(Part,
+        chained_field="workcell",
+        chained_model_field="workcell")
+
+    hours = models.DecimalField(max_digits=4, decimal_places=2, default=10)
+    shots = models.IntegerField(
+	validators=[MinValueValidator(1)], verbose_name="Shots per round")
+    total_shots = models.IntegerField()
+
+    def get_total_shots(self):
+        return int(self.shots * self.workcell.turns_per_hour * self.hours)
+
+    def save(self, *args, **kwargs):
+        self.total_shots = self.get_total_shots()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return "{}: {}".format(
+            self.part.part_number, self.shots)
 
 class StartOfShift(models.Model):
     class Meta:
@@ -252,6 +280,32 @@ URGENCY = ( (1, "1"),
             (5, "5"))
 STATUS = (  ("open", "Open"),
             ("completed", "Completed"))
+MAINT_CODES = ( ("mech", "Mechanical"),
+                ("elec", "Electrical"),
+                ("pneu", "Pneumatic"),
+                ("hydr", "Hydraulic"),
+                ("water", "Water"),
+                ("struc", "Structural"),
+                ("chem", "Chemical"))
+
+class MaintenanceRecord(models.Model):
+    date = models.DateField(
+        validators=[date_validator],
+        verbose_name="Date performed")
+    employee = models.ForeignKey(Employee, verbose_name="Work performed by")
+
+    problem_code = models.CharField(max_length=5, choices=MAINT_CODES)
+    work_done = models.CharField(max_length=50, blank=True)
+    repair_time = models.IntegerField(validators=[MinValueValidator(0)])
+    workcell_downtime = models.IntegerField(validators=[MinValueValidator(0)])
+
+    parts_used = models.CharField(max_length=3, choices=YESNONA[:2])
+    parts_reordered = models.CharField(max_length=3, choices=YESNONA)
+    parts_cost = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return "{}, {}: {}".format(
+            self.date, self.problem_code, self.work_done)
 
 class MaintenanceRequest(models.Model):
     workcell = models.ForeignKey(Workcell)
@@ -263,9 +317,10 @@ class MaintenanceRequest(models.Model):
     department = models.ForeignKey(Department)
     problem = models.CharField(max_length=100)
     urgency = models.IntegerField(choices=URGENCY)
+
+    record = models.ForeignKey(MaintenanceRecord, blank=True, null=True)
     status = models.CharField(max_length=30, choices=STATUS)
 
     def __str_(self):
         return "{}, {}: {}".format(
             self.date, self.workcell.name, self.problem)
-

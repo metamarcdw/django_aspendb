@@ -16,6 +16,13 @@ class PartAdmin(admin.ModelAdmin):
     def program_name(self, obj):
         return obj.program.name
 
+class ProductionScheduleAdmin(admin.ModelAdmin):
+    exclude = ("total_shots",)
+    list_display = ("part", "shots", "date", "shift", "workcell")
+    list_filter = ("date", "shift", "workcell")
+    date_hierarchy = "date"
+    ordering = ("date", "shift", "workcell")
+
 class StartOfShiftAdmin(admin.ModelAdmin):
     list_display = ("date", "shift", "workcell")
     list_filter = ("date",)
@@ -72,6 +79,18 @@ class DowntimeAdmin(admin.ModelAdmin):
             autocomplete.ModelSelect2(url='employee-autocomplete')
         return form
 
+class MaintenanceRecordAdmin(admin.ModelAdmin):
+    list_display = ("date", "problem_code", "work_done")
+    list_filter = ("date", "problem_code")
+    date_hierarchy = "date"
+    ordering = ("date", "problem_code")
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields['employee'].widget = \
+            autocomplete.ModelSelect2(url='employee-autocomplete')
+        return form
+
 class MaintenanceRequestAdmin(admin.ModelAdmin):
     list_display = ("date", "shift", "problem")
     list_filter = ("date",)
@@ -93,9 +112,11 @@ admin.site.register(Program)
 admin.site.register(Workcell)
 admin.site.register(Part, PartAdmin)
 admin.site.register(DowntimeCode)
+admin.site.register(ProductionSchedule, ProductionScheduleAdmin)
 admin.site.register(StartOfShift, StartOfShiftAdmin)
 admin.site.register(EndOfShift, EndOfShiftAdmin)
 admin.site.register(ScrapReport, ScrapReportAdmin)
 admin.site.register(Downtime, DowntimeAdmin)
+admin.site.register(MaintenanceRecord, MaintenanceRecordAdmin)
 admin.site.register(MaintenanceRequest, MaintenanceRequestAdmin)
 
