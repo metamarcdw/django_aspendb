@@ -308,7 +308,7 @@ class MaintenanceRecord(models.Model):
             self.date, self.problem_code, self.work_done)
 
 class MaintenanceRequest(models.Model):
-    workcell = models.ForeignKey(Workcell)
+    workcell = models.ForeignKey(Workcell, blank=True, null=True)
     date = models.DateField(validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
     created_by = models.ForeignKey(Employee, related_name="created_by")
@@ -324,3 +324,5 @@ class MaintenanceRequest(models.Model):
     def __str_(self):
         return "{}, {}: {}".format(
             self.date, self.workcell.name, self.problem)
+
+

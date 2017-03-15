@@ -92,7 +92,7 @@ class MaintenanceRecordAdmin(admin.ModelAdmin):
         return form
 
 class MaintenanceRequestAdmin(admin.ModelAdmin):
-    list_display = ("date", "shift", "problem")
+    list_display = ("date", "shift", "problem", "status")
     list_filter = ("date",)
     date_hierarchy = "date"
     ordering = ("date",)
