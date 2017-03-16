@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'suit',
     'dal',
     'dal_select2',
     'django.contrib.admin',
@@ -122,3 +123,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+SUIT_CONFIG = {
+    'ADMIN_NAME': 'Aspen Technologies Database',
+    'SEARCH_URL': '',
+    'HEADER_DATE_FORMAT': 'l, F j, Y',
+    'HEADER_TIME_FORMAT': 'g:i A',
+}
+

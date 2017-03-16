@@ -1,5 +1,6 @@
 from django.contrib import admin
 from dal import autocomplete
+from suit.widgets import SuitDateWidget
 from aspendb.models import *
 
 admin.site.site_title = "Aspen Technologies Database"
@@ -35,6 +36,11 @@ class ProductionScheduleAdmin(admin.ModelAdmin):
     date_hierarchy = "date"
     ordering = ("date", "shift", "workcell")
 
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields['date'].widget = SuitDateWidget()
+        return form
+
 class StartOfShiftAdmin(admin.ModelAdmin):
     list_display = ("date", "shift", "workcell")
     list_filter = ("date",)
@@ -45,6 +51,7 @@ class StartOfShiftAdmin(admin.ModelAdmin):
         form = super().get_form(request, obj, **kwargs)
         form.base_fields['employee'].widget = \
             autocomplete.ModelSelect2(url='employee-autocomplete')
+        form.base_fields['date'].widget = SuitDateWidget()
         return form
 
 class EndOfShiftAdmin(admin.ModelAdmin):
@@ -65,6 +72,7 @@ class EndOfShiftAdmin(admin.ModelAdmin):
         form = super().get_form(request, obj, **kwargs)
         form.base_fields['employee'].widget = \
             autocomplete.ModelSelect2(url='employee-autocomplete')
+        form.base_fields['date'].widget = SuitDateWidget()
         return form
 
 class ScrapReportAdmin(admin.ModelAdmin):
@@ -77,6 +85,7 @@ class ScrapReportAdmin(admin.ModelAdmin):
         form = super().get_form(request, obj, **kwargs)
         form.base_fields['employee'].widget = \
             autocomplete.ModelSelect2(url='employee-autocomplete')
+        form.base_fields['date'].widget = SuitDateWidget()
         return form
 
 class DowntimeAdmin(admin.ModelAdmin):
@@ -89,6 +98,7 @@ class DowntimeAdmin(admin.ModelAdmin):
         form = super().get_form(request, obj, **kwargs)
         form.base_fields['employee'].widget = \
             autocomplete.ModelSelect2(url='employee-autocomplete')
+        form.base_fields['date'].widget = SuitDateWidget()
         return form
 
 class MaintenanceRecordAdmin(admin.ModelAdmin):
@@ -101,6 +111,7 @@ class MaintenanceRecordAdmin(admin.ModelAdmin):
         form = super().get_form(request, obj, **kwargs)
         form.base_fields['employee'].widget = \
             autocomplete.ModelSelect2(url='employee-autocomplete')
+        form.base_fields['date'].widget = SuitDateWidget()
         return form
 
 class MaintenanceRequestAdmin(admin.ModelAdmin):
@@ -115,6 +126,7 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
             autocomplete.ModelSelect2(url='employee-autocomplete')
         form.base_fields['approved_by'].widget = \
             autocomplete.ModelSelect2(url='employee-autocomplete')
+        form.base_fields['date'].widget = SuitDateWidget()
         return form
 
 # Register your models here.
