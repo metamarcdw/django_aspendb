@@ -47,7 +47,8 @@ class Workcell(models.Model):
         validators=[nospace_validator],
         primary_key=True)
     foam_system = models.CharField(max_length=30)
-    turns_per_hour = models.DecimalField(max_digits=4, decimal_places=2, default=10)
+    turns_per_hour = models.DecimalField(
+        max_digits=4, decimal_places=2, default=10)
     cell_leader_1st = models.ForeignKey(
         Employee, related_name="cell_leader_1st", blank=True, null=True)
     cell_leader_2nd = models.ForeignKey(
@@ -292,12 +293,14 @@ class MaintenanceRecord(models.Model):
     date = models.DateField(
         validators=[date_validator],
         verbose_name="Date performed")
-    employee = models.ForeignKey(Employee, verbose_name="Work performed by")
+    employee = models.ForeignKey(
+        Employee, verbose_name="Work performed by")
 
     problem_code = models.CharField(max_length=5, choices=MAINT_CODES)
     work_done = models.CharField(max_length=50, blank=True)
     repair_time = models.IntegerField(validators=[MinValueValidator(0)])
-    workcell_downtime = models.IntegerField(validators=[MinValueValidator(0)])
+    workcell_downtime = models.IntegerField(
+        validators=[MinValueValidator(0)])
 
     parts_used = models.CharField(max_length=3, choices=YESNONA[:2])
     parts_reordered = models.CharField(max_length=3, choices=YESNONA)
@@ -319,7 +322,8 @@ class MaintenanceRequest(models.Model):
     urgency = models.IntegerField(choices=URGENCY)
 
     record = models.ForeignKey(MaintenanceRecord, blank=True, null=True)
-    status = models.CharField(max_length=30, choices=STATUS)
+    status = models.CharField(max_length=30,
+        choices=STATUS, default=STATUS[0][0])
 
     def __str_(self):
         return "{}, {}: {}".format(
