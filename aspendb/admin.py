@@ -10,6 +10,18 @@ class EmployeeAdmin(admin.ModelAdmin):
     search_fields = ("first_name", "last_name")
     ordering = ("last_name", "first_name")
 
+class WorkcellAdmin(admin.ModelAdmin):
+    list_display = ("name", "foam_system", "turns_per_hour")
+    ordering = ("name",)
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields['cell_leader_1st'].widget = \
+            autocomplete.ModelSelect2(url='employee-autocomplete')
+        form.base_fields['cell_leader_2nd'].widget = \
+            autocomplete.ModelSelect2(url='employee-autocomplete')
+        return form
+
 class PartAdmin(admin.ModelAdmin):
     list_display = ("part_number", "program_name")
 
@@ -109,7 +121,7 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
 admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(Department)
 admin.site.register(Program)
-admin.site.register(Workcell)
+admin.site.register(Workcell, WorkcellAdmin)
 admin.site.register(Part, PartAdmin)
 admin.site.register(DowntimeCode)
 admin.site.register(ProductionSchedule, ProductionScheduleAdmin)
