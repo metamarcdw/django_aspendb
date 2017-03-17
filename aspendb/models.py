@@ -247,6 +247,8 @@ class ScrapReport(models.Model):
         chained_model_field="workcell")
 
     bad_mix = models.IntegerField(validators=[MinValueValidator(0)])
+    dents = models.IntegerField(validators=[MinValueValidator(0)])
+    mold_release = models.IntegerField(validators=[MinValueValidator(0)])
     non_fill = models.IntegerField(validators=[MinValueValidator(0)])
     collapse = models.IntegerField(validators=[MinValueValidator(0)])
     tears = models.IntegerField(validators=[MinValueValidator(0)])
@@ -255,6 +257,34 @@ class ScrapReport(models.Model):
     open_voilds = models.IntegerField(validators=[MinValueValidator(0)])
     under_weight = models.IntegerField(validators=[MinValueValidator(0)])
     over_weight = models.IntegerField(validators=[MinValueValidator(0)])
+    total_scrap = models.IntegerField(validators=[MinValueValidator(0)])
+
+    numbers = models.TextField(max_length = 1000)
+
+    def scrap_dict(self):
+        d = dict()
+        lines = self.numbers.split("\n")
+        for line in lines:
+            s, i = line.split(": ")
+            i = int(i)
+            d[s] = i
+        return d
+
+    def save(self, *args, **kwargs):
+        d = self.scrap_dict()
+        self.bad_mix = d["bad mix"]
+        self.dents = d["dents"]
+        self.mold_release = d["mold release"]
+        self.non_fill = d["non fill"]
+        self.collapse = d["collapse"]
+        self.tears = d["tears"]
+        self.trim = d["trim"]
+        self.voilds = d["voilds"]
+        self.open_voilds = d["open voilds"]
+        self.under_weight = d["under weight"]
+        self.over_weight = d["over weight"]
+        self.total_scrap = sum(d.values())
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return "{}, {}, {}: {}".format(

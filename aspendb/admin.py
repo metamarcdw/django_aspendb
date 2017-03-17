@@ -55,7 +55,10 @@ class EndOfShiftAdmin(admin.ModelAdmin):
         return "{}%".format(obj.scrap_percent)
 
 class ScrapReportAdmin(admin.ModelAdmin):
-    list_display = ("part", "date", "shift", "workcell")
+    exclude = ("bad_mix", "dents", "mold_release", "non_fill",
+                "collapse", "tears", "trim", "voilds", "open_voilds",
+                "under_weight", "over_weight", "total_scrap")
+    list_display = ("part", "date", "shift", "workcell", "total_scrap")
     list_filter = ("date",)
     date_hierarchy = "date"
     ordering = ("date", "shift", "workcell")
