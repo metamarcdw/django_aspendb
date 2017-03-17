@@ -30,7 +30,10 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+JQUERY_URL = False
+
 INSTALLED_APPS = [
+    'jet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -116,7 +119,11 @@ USE_L10N = True
 USE_TZ = True
 
 
+JET_DEFAULT_THEME = 'green'
+JET_SIDE_MENU_COMPACT = True
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
