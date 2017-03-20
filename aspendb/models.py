@@ -320,11 +320,11 @@ MAINT_CODES = ( ("mech", "Mechanical"),
                 ("chem", "Chemical"))
 
 class MaintenanceRecord(models.Model):
+    employee = models.ForeignKey(
+        Employee, verbose_name="Work performed by")
     date = models.DateField(
         validators=[date_validator],
         verbose_name="Date performed")
-    employee = models.ForeignKey(
-        Employee, verbose_name="Work performed by")
 
     problem_code = models.CharField(max_length=5, choices=MAINT_CODES)
     work_done = models.CharField(max_length=50, blank=True)
