@@ -13,14 +13,6 @@ class WorkcellAdmin(admin.ModelAdmin):
     list_display = ("name", "foam_system", "turns_per_hour")
     ordering = ("name",)
 
-    def get_form(self, request, obj=None, **kwargs):
-        form = super().get_form(request, obj, **kwargs)
-        form.base_fields['cell_leader_1st'].widget = \
-            autocomplete.ModelSelect2(url='employee-autocomplete')
-        form.base_fields['cell_leader_2nd'].widget = \
-            autocomplete.ModelSelect2(url='employee-autocomplete')
-        return form
-
 class PartAdmin(admin.ModelAdmin):
     list_display = ("part_number", "program_name")
 
