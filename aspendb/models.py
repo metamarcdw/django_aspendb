@@ -93,7 +93,7 @@ class ProductionSchedule(models.Model):
         chained_field="workcell",
         chained_model_field="workcell")
 
-    hours = models.DecimalField(max_digits=4, decimal_places=2, default=10)
+    hours = models.DecimalField(max_digits=4, decimal_places=2, default=9.33)
     shots = models.IntegerField(
 	validators=[MinValueValidator(1)], verbose_name="Shots per round")
     total_shots = models.IntegerField()
@@ -136,9 +136,9 @@ class StartOfShift(models.Model):
     iso_flow = models.FloatField(
         validators=[MaxValueValidator(200), MinValueValidator(20)])
     poly_pressure = models.IntegerField(
-        validators=[MaxValueValidator(2500), MinValueValidator(500)])
+        validators=[MaxValueValidator(2500), MinValueValidator(50)])
     iso_pressure = models.IntegerField(
-        validators=[MaxValueValidator(2500), MinValueValidator(500)])
+        validators=[MaxValueValidator(2500), MinValueValidator(50)])
 
     adequate_components = models.CharField(
         verbose_name="Is there an adequate supply of components?",
@@ -209,7 +209,7 @@ class EndOfShift(models.Model):
     pot_grounded = models.CharField(
         verbose_name="Is spray pot ground connected?",
         max_length=3, choices=YESNONA)
-    comments = models.CharField(max_length=500, blank=True)
+    comments = models.TextField(max_length=1000, blank=True)
 
     total_shots = models.IntegerField()
     oee = models.DecimalField(max_digits=5, decimal_places=2)
@@ -246,18 +246,18 @@ class ScrapReport(models.Model):
         chained_field="workcell",
         chained_model_field="workcell")
 
-    bad_mix = models.IntegerField(validators=[MinValueValidator(0)])
-    dents = models.IntegerField(validators=[MinValueValidator(0)])
-    mold_release = models.IntegerField(validators=[MinValueValidator(0)])
-    non_fill = models.IntegerField(validators=[MinValueValidator(0)])
-    collapse = models.IntegerField(validators=[MinValueValidator(0)])
-    tears = models.IntegerField(validators=[MinValueValidator(0)])
-    trim = models.IntegerField(validators=[MinValueValidator(0)])
-    voilds = models.IntegerField(validators=[MinValueValidator(0)])
-    open_voilds = models.IntegerField(validators=[MinValueValidator(0)])
-    under_weight = models.IntegerField(validators=[MinValueValidator(0)])
-    over_weight = models.IntegerField(validators=[MinValueValidator(0)])
-    total_scrap = models.IntegerField(validators=[MinValueValidator(0)])
+    bad_mix = models.IntegerField(default=0)
+    dents = models.IntegerField(default=0)
+    mold_release = models.IntegerField(default=0)
+    non_fill = models.IntegerField(default=0)
+    collapse = models.IntegerField(default=0)
+    tears = models.IntegerField(default=0)
+    trim = models.IntegerField(default=0)
+    voilds = models.IntegerField(default=0)
+    open_voilds = models.IntegerField(default=0)
+    under_weight = models.IntegerField(default=0)
+    over_weight = models.IntegerField(default=0)
+    total_scrap = models.IntegerField()
 
     numbers = models.TextField(max_length = 1000)
 
@@ -272,17 +272,20 @@ class ScrapReport(models.Model):
 
     def save(self, *args, **kwargs):
         d = self.scrap_dict()
-        self.bad_mix = d["bad mix"]
-        self.dents = d["dents"]
-        self.mold_release = d["mold release"]
-        self.non_fill = d["non fill"]
-        self.collapse = d["collapse"]
-        self.tears = d["tears"]
-        self.trim = d["trim"]
-        self.voilds = d["voilds"]
-        self.open_voilds = d["open voilds"]
-        self.under_weight = d["under weight"]
-        self.over_weight = d["over weight"]
+        try:
+            self.bad_mix = d["bad mix"]
+            self.dents = d["dents"]
+            self.mold_release = d["mold release"]
+            self.non_fill = d["non fill"]
+            self.collapse = d["collapse"]
+            self.tears = d["tears"]
+            self.trim = d["trim"]
+            self.voilds = d["voilds"]
+            self.open_voilds = d["open voilds"]
+            self.under_weight = d["under weight"]
+            self.over_weight = d["over weight"]
+        except KeyError as ke:
+            pass
         self.total_scrap = sum(d.values())
         super().save(*args, **kwargs)
 
