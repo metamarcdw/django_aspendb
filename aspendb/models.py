@@ -261,31 +261,20 @@ class ScrapReport(models.Model):
 
     numbers = models.TextField(max_length = 1000)
 
-    def scrap_dict(self):
+    @staticmethod
+    def scrap_dict(txt):
         d = dict()
-        lines = self.numbers.split("\n")
-        for line in lines:
+        for line in txt.split("\n"):
             s, i = line.split(": ")
-            i = int(i)
-            d[s] = i
+            d[s] = int(i)
         return d
 
     def save(self, *args, **kwargs):
-        d = self.scrap_dict()
-        try:
-            self.bad_mix = d["bad mix"]
-            self.dents = d["dents"]
-            self.mold_release = d["mold release"]
-            self.non_fill = d["non fill"]
-            self.collapse = d["collapse"]
-            self.tears = d["tears"]
-            self.trim = d["trim"]
-            self.voilds = d["voilds"]
-            self.open_voilds = d["open voilds"]
-            self.under_weight = d["under weight"]
-            self.over_weight = d["over weight"]
-        except KeyError as ke:
-            pass
+        d = ScrapReport.scrap_dict(self.numbers)
+        for key, value in d.items():
+            key = key.replace(" ", "_")
+            if isinstance(getattr(self, key), models.IntegerField):
+                setattr(self, key, value)
         self.total_scrap = sum(d.values())
         super().save(*args, **kwargs)
 
