@@ -257,8 +257,11 @@ class ScrapReport(models.Model):
     open_voilds = models.IntegerField(default=0)
     under_weight = models.IntegerField(default=0)
     over_weight = models.IntegerField(default=0)
-    total_scrap = models.IntegerField()
+    cracks = models.IntegerField(default=0)
+    swollen = models.IntegerField(default=0)
+    contamination = models.IntegerField(default=0)
 
+    total_scrap = models.IntegerField()
     numbers = models.TextField(max_length = 1000)
 
     @staticmethod
