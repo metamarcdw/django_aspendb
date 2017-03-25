@@ -118,12 +118,8 @@ class StartOfShift(models.Model):
     date = models.DateField(validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
-    process_verified = models.CharField(
-        verbose_name="Process parameters verified?",
-        max_length=3, choices=YESNONA[:2])
-    weights_verified = models.CharField(
-        verbose_name="Shot weights verified?",
-        max_length=3, choices=YESNONA[:2])
+    process_verified = models.CharField(max_length=3, choices=YESNONA[:2])
+    weights_verified = models.CharField(max_length=3, choices=YESNONA[:2])
 
     mix_ratio = models.FloatField(
         validators=[MaxValueValidator(2), MinValueValidator(0)])
@@ -140,34 +136,17 @@ class StartOfShift(models.Model):
     iso_pressure = models.IntegerField(
         validators=[MaxValueValidator(2500), MinValueValidator(50)])
 
-    adequate_components = models.CharField(
-        verbose_name="Is there an adequate supply of components?",
-        max_length=3, choices=YESNONA)
-    airhose_secure = models.CharField(
-        verbose_name="Are all air hose nozzles secure?",
-        max_length=3, choices=YESNONA)
-    poly_agitator = models.CharField(
-        verbose_name="Is poly agitator functioning?",
-        max_length=3, choices=YESNONA[:2])
-    chemical_tracked = models.CharField(
-        verbose_name="Is poly/iso recorded in lot tracking book?",
-        max_length=3, choices=YESNONA)
+    adequate_components = models.CharField(max_length=3, choices=YESNONA)
+    airhose_secure = models.CharField(max_length=3, choices=YESNONA)
+    poly_agitator = models.CharField(max_length=3, choices=YESNONA[:2])
+    chemical_tracked = models.CharField(max_length=3, choices=YESNONA)
 
     poly_date = models.DateField()
     iso_date = models.DateField()
 
-    stands_labels = models.CharField(
-        verbose_name="Are all pack stands/pack instructions " + \
-            "& barcode labels in place?",
-        max_length=3, choices=YESNONA[:2])
-    new_product = models.CharField(
-        verbose_name="Are there any NEW production parts " + \
-            "scheduled to run today?",
-        max_length=3, choices=YESNONA[:2])
-    opposite_parts = models.CharField(
-        verbose_name="Are the NEW parts - symetrically opposite " + \
-            "parts on the same turntable?",
-        max_length=3, choices=YESNONA[:2])
+    stands_labels = models.CharField(max_length=3, choices=YESNONA[:2])
+    new_product = models.CharField(max_length=3, choices=YESNONA[:2])
+    opposite_parts = models.CharField(max_length=3, choices=YESNONA[:2])
 
     def __str__(self):
         return "{}, {}, {}".format(
@@ -188,27 +167,13 @@ class EndOfShift(models.Model):
     missed_shots = models.IntegerField(validators=[MinValueValidator(0)])
     total_scrap = models.IntegerField(validators=[MinValueValidator(0)])
 
-    spray_pots = models.CharField(
-        verbose_name="Is your spray pot topped off?",
-        max_length=3, choices=YESNONA)
-    adequate_poly = models.CharField(
-        verbose_name="Is there an adequate supply of poly?",
-        max_length=3, choices=YESNONA[:2])
-    adequate_iso = models.CharField(
-        verbose_name="Is there an adequate supply of iso?",
-        max_length=3, choices=YESNONA[:2])
-    replacement_poly = models.CharField(
-        verbose_name="Is replacement poly agitating?",
-        max_length=3, choices=YESNONA)
-    scrap_labeled = models.CharField(
-        verbose_name="Is all scrap properly labeled?",
-        max_length=3, choices=YESNONA[:2])
-    cabinet_stocked = models.CharField(
-        verbose_name="Are all supplies in cell leader cabinet stocked?",
-        max_length=3, choices=YESNONA)
-    pot_grounded = models.CharField(
-        verbose_name="Is spray pot ground connected?",
-        max_length=3, choices=YESNONA)
+    spray_pots = models.CharField(max_length=3, choices=YESNONA)
+    adequate_poly = models.CharField(max_length=3, choices=YESNONA[:2])
+    adequate_iso = models.CharField(max_length=3, choices=YESNONA[:2])
+    replacement_poly = models.CharField(max_length=3, choices=YESNONA)
+    scrap_labeled = models.CharField(max_length=3, choices=YESNONA[:2])
+    cabinet_stocked = models.CharField(max_length=3, choices=YESNONA)
+    pot_grounded = models.CharField(max_length=3, choices=YESNONA)
     comments = models.TextField(max_length=1000, blank=True)
 
     total_shots = models.IntegerField()
