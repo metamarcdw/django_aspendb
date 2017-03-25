@@ -128,7 +128,8 @@ class MaintenanceRecordForm(forms.ModelForm):
     class Meta:
         model = MaintenanceRecord
         fields = "__all__"
-    shift = get_radio_formfield(SHIFTS)
+    parts_used = get_radio_formfield(YESNONA[:2])
+    parts_reordered = get_radio_formfield(YESNONA)
 class MaintenanceRecordAdmin(admin.ModelAdmin):
     form = MaintenanceRecordForm
     list_display = ("date", "problem_code", "work_done")

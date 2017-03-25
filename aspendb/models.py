@@ -113,10 +113,10 @@ class StartOfShift(models.Model):
     class Meta:
         unique_together = ("date", "shift", "workcell")
 
+    employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
-    employee = models.ForeignKey(Employee)
 
     process_verified = models.CharField(
         verbose_name="Process parameters verified?",
@@ -177,10 +177,10 @@ class EndOfShift(models.Model):
     class Meta:
         unique_together = ("date", "shift", "workcell")
 
+    employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
-    employee = models.ForeignKey(Employee)
 
     starting_shot = models.IntegerField(validators=[MinValueValidator(0)])
     ending_shot = models.IntegerField(validators=[MinValueValidator(1)])
@@ -238,10 +238,10 @@ class ScrapReport(models.Model):
     class Meta:
         unique_together = ("date", "shift", "workcell", "part")
 
+    employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
-    employee = models.ForeignKey(Employee)
     part = ChainedForeignKey(Part,
         chained_field="workcell",
         chained_model_field="workcell")
@@ -287,10 +287,10 @@ class ScrapReport(models.Model):
             self.workcell.name, self.part.part_number)
 
 class Downtime(models.Model):
+    employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
-    employee = models.ForeignKey(Employee)
 
     minutes = models.IntegerField(validators=[MinValueValidator(1)])
     code = models.ForeignKey(DowntimeCode)
@@ -329,17 +329,18 @@ class MaintenanceRecord(models.Model):
 
     parts_used = models.CharField(max_length=3, choices=YESNONA[:2])
     parts_reordered = models.CharField(max_length=3, choices=YESNONA)
-    parts_cost = models.DecimalField(max_digits=10, decimal_places=2)
+    parts_cost = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return "{}, {}: {}".format(
             self.date, self.problem_code, self.work_done)
 
 class MaintenanceRequest(models.Model):
+    created_by = models.ForeignKey(Employee, related_name="created_by")
     workcell = models.ForeignKey(Workcell, blank=True, null=True)
     date = models.DateField(validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
-    created_by = models.ForeignKey(Employee, related_name="created_by")
 
     approved_by = models.ForeignKey(Employee, related_name="approved_by")
     department = models.ForeignKey(Department)
