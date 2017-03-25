@@ -251,6 +251,27 @@ class ScrapReport(models.Model):
             self.date, self.shift,
             self.workcell.name, self.part.part_number)
 
+
+ONETOFIVE = ((1, "1"),
+            (2, "2"),
+            (3, "3"),
+            (4, "4"),
+            (5, "5"))
+
+class LaborAllocationReport(models.Model):
+    class Meta:
+        unique_together = ("date", "shift", "workcell", "period")
+
+    employee = models.ForeignKey(Employee)
+    workcell = models.ForeignKey(Workcell)
+    date = models.DateField(validators=[date_validator])
+    shift = models.CharField(max_length=3, choices=SHIFTS)
+
+    period = models.IntegerField(choices=ONETOFIVE)
+    shooter = models.ForeignKey(Employee, related_name="shooter")
+    puller = models.ForeignKey(Employee, related_name="puller")
+    sprayer = models.ForeignKey(Employee, related_name="sprayer")
+
 class Downtime(models.Model):
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
@@ -264,11 +285,6 @@ class Downtime(models.Model):
         return "{}, {}, {}".format(
             self.date, self.shift, self.workcell.name)
 
-URGENCY = ( (1, "1"),
-            (2, "2"),
-            (3, "3"),
-            (4, "4"),
-            (5, "5"))
 STATUS = (  ("open", "Open"),
             ("completed", "Completed"))
 MAINT_CODES = ( ("mech", "Mechanical"),
@@ -310,7 +326,7 @@ class MaintenanceRequest(models.Model):
     approved_by = models.ForeignKey(Employee, related_name="approved_by")
     department = models.ForeignKey(Department)
     problem = models.CharField(max_length=100)
-    urgency = models.IntegerField(choices=URGENCY)
+    urgency = models.IntegerField(choices=ONETOFIVE)
 
     record = models.ForeignKey(MaintenanceRecord, blank=True, null=True)
     status = models.CharField(max_length=30,

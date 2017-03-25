@@ -131,6 +131,19 @@ class ScrapReportAdmin(admin.ModelAdmin):
     date_hierarchy = "date"
     ordering = ("date", "shift", "workcell")
 
+class LaborAllocationReportForm(forms.ModelForm):
+    class Meta:
+        model = LaborAllocationReport
+        fields = "__all__"
+    shift = get_radio_formfield(None, SHIFTS)
+    period = get_radio_formfield(None, ONETOFIVE)
+class LaborAllocationReportAdmin(admin.ModelAdmin):
+    form = LaborAllocationReportForm
+    list_display = ("date", "shift", "workcell", "period")
+    list_filter = ("date",)
+    date_hierarchy = "date"
+    ordering = ("date", "shift", "workcell")
+
 class DowntimeForm(forms.ModelForm):
     class Meta:
         model = Downtime
@@ -161,6 +174,7 @@ class MaintenanceRequestForm(forms.ModelForm):
         model = MaintenanceRequest
         fields = "__all__"
     shift = get_radio_formfield(None, SHIFTS)
+    urgency = get_radio_formfield(None, ONETOFIVE)
 class MaintenanceRequestAdmin(admin.ModelAdmin):
     form = MaintenanceRequestForm
     list_display = ("date", "shift", "problem", "status")
@@ -179,6 +193,7 @@ admin.site.register(ProductionSchedule, ProductionScheduleAdmin)
 admin.site.register(StartOfShift, StartOfShiftAdmin)
 admin.site.register(EndOfShift, EndOfShiftAdmin)
 admin.site.register(ScrapReport, ScrapReportAdmin)
+admin.site.register(LaborAllocationReport, LaborAllocationReportAdmin)
 admin.site.register(Downtime, DowntimeAdmin)
 admin.site.register(MaintenanceRecord, MaintenanceRecordAdmin)
 admin.site.register(MaintenanceRequest, MaintenanceRequestAdmin)
