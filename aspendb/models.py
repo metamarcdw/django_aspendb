@@ -9,6 +9,15 @@ from smart_selects.db_fields import ChainedForeignKey
 
 SHIFTS = (  ("1st", "1st"),
             ("2nd", "2nd"))
+ONETOFIVE = ((1, "1"),
+            (2, "2"),
+            (3, "3"),
+            (4, "4"),
+            (5, "5"))
+
+def date_validator(value):
+    if value > datetime.date.today():
+        raise forms.ValidationError("The date cannot be in the future!")
 
 class Employee(models.Model):
     class Meta:
@@ -16,10 +25,10 @@ class Employee(models.Model):
 
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=40)
+    hire_date = models.DateField(validators=[date_validator])
     email = models.EmailField(blank=True)
     shift = models.CharField(max_length=3, choices=SHIFTS)
-    training_level = models.IntegerField(
-        validators=[MaxValueValidator(5), MinValueValidator(1)])
+    training_level = models.IntegerField(choices=ONETOFIVE)
 
     def __str__(self):
         return "{} {}".format(self.first_name, self.last_name)
@@ -77,10 +86,6 @@ class DowntimeCode(models.Model):
 YESNONA = ( ('yes', 'Yes'),
             ('no', 'No'),
             ('na', 'N/A'))
-
-def date_validator(value):
-    if value > datetime.date.today():
-        raise forms.ValidationError("The date cannot be in the future!")
 
 class ProductionSchedule(models.Model):
     class Meta:
@@ -253,13 +258,6 @@ class ScrapReport(models.Model):
         return "{}, {}, {}: {}".format(
             self.date, self.shift,
             self.workcell.name, self.part.part_number)
-
-
-ONETOFIVE = ((1, "1"),
-            (2, "2"),
-            (3, "3"),
-            (4, "4"),
-            (5, "5"))
 
 class LaborAllocationReport(models.Model):
     class Meta:

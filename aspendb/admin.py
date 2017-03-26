@@ -14,6 +14,7 @@ class EmployeeForm(forms.ModelForm):
         model = Employee
         fields = "__all__"
     shift = get_radio_formfield(None, SHIFTS)
+    training_level = get_radio_formfield(None, ONETOFIVE)
 class EmployeeAdmin(admin.ModelAdmin):
     form = EmployeeForm
     list_display = ("first_name", "last_name", "shift", "email")
