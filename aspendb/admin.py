@@ -125,7 +125,7 @@ class ScrapReportAdmin(admin.ModelAdmin):
     form = ScrapReportForm
     exclude = ("bad_mix", "dents", "mold_release", "non_fill",
                 "collapse", "tears", "trim", "voilds", "open_voilds",
-                "under_weight", "over_weight", "cracks", "swollen",
+                "under_weight", "over_weight", "swollen",
                 "contamination", "total_scrap")
     list_display = ("part", "date", "shift", "workcell", "total_scrap")
     list_filter = ("date",)

@@ -88,9 +88,6 @@ YESNONA = ( ('yes', 'Yes'),
             ('na', 'N/A'))
 
 class ProductionSchedule(models.Model):
-    class Meta:
-        unique_together = ("date", "shift", "workcell", "part")
-
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
@@ -100,7 +97,7 @@ class ProductionSchedule(models.Model):
 
     hours = models.DecimalField(max_digits=4, decimal_places=2, default=9.33)
     shots = models.IntegerField(
-	validators=[MinValueValidator(1)], verbose_name="Shots per round")
+        validators=[MinValueValidator(1)], verbose_name="Shots per round")
     total_shots = models.IntegerField()
 
     def get_total_shots(self):
@@ -230,7 +227,6 @@ class ScrapReport(models.Model):
     open_voilds = models.IntegerField(default=0)
     under_weight = models.IntegerField(default=0)
     over_weight = models.IntegerField(default=0)
-    cracks = models.IntegerField(default=0)
     swollen = models.IntegerField(default=0)
     contamination = models.IntegerField(default=0)
 
@@ -249,8 +245,8 @@ class ScrapReport(models.Model):
         d = ScrapReport.scrap_dict(self.numbers)
         for key, value in d.items():
             key = key.replace(" ", "_")
-            if isinstance(getattr(self, key), models.IntegerField):
-                setattr(self, key, value)
+            assert getattr(self, key) is not None
+            setattr(self, key, value)
         self.total_scrap = sum(d.values())
         super().save(*args, **kwargs)
 
