@@ -269,6 +269,11 @@ class LaborAllocationReport(models.Model):
     puller = models.ForeignKey(Employee, related_name="puller")
     sprayer = models.ForeignKey(Employee, related_name="sprayer")
 
+    def __str__(self):
+        return "{}, {}, {}: {}".format(
+            self.date, self.shift,
+            self.workcell.name, self.period)
+
 class Downtime(models.Model):
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
