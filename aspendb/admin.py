@@ -157,6 +157,12 @@ class DowntimeAdmin(admin.ModelAdmin):
     date_hierarchy = "date"
     ordering = ("date", "shift", "workcell")
 
+class SpotCheckReportAdmin(admin.ModelAdmin):
+    list_display = ("date", "shift", "workcell", "part")
+    list_filter = ("date",)
+    date_hierarchy = "date"
+    ordering = ("date", "shift", "workcell")
+
 class MaintenanceRecordForm(forms.ModelForm):
     class Meta:
         model = MaintenanceRecord
@@ -196,6 +202,7 @@ admin.site.register(EndOfShift, EndOfShiftAdmin)
 admin.site.register(ScrapReport, ScrapReportAdmin)
 admin.site.register(LaborAllocationReport, LaborAllocationReportAdmin)
 admin.site.register(Downtime, DowntimeAdmin)
+admin.site.register(SpotCheckReport, SpotCheckReportAdmin)
 admin.site.register(MaintenanceRecord, MaintenanceRecordAdmin)
 admin.site.register(MaintenanceRequest, MaintenanceRequestAdmin)
 

@@ -287,6 +287,26 @@ class Downtime(models.Model):
         return "{}, {}, {}".format(
             self.date, self.shift, self.workcell.name)
 
+class SpotCheckReport(models.Model):
+    employee = models.ForeignKey(Employee)
+    workcell = models.ForeignKey(Workcell)
+    date = models.DateField(validators=[date_validator])
+    shift = models.CharField(max_length=3, choices=SHIFTS)
+    part = ChainedForeignKey(Part,
+        chained_field="workcell",
+        chained_model_field="workcell")
+
+    time = models.TimeField(auto_now=True)
+    qty_checked = models.IntegerField(validators=[MinValueValidator(0)])
+    defects = models.CharField(max_length=50)
+    packer_initials = models.CharField(max_length=3)
+    comments = models.TextField(max_length=1000, blank=True)
+
+    def __str__(self):
+        return "{}, {}, {}: {}".format(
+            self.date, self.shift,
+            self.workcell.name, self.part.part_number)
+
 STATUS = (  ("open", "Open"),
             ("completed", "Completed"))
 MAINT_CODES = ( ("mech", "Mechanical"),
