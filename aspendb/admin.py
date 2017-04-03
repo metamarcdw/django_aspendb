@@ -157,7 +157,13 @@ class DowntimeAdmin(admin.ModelAdmin):
     date_hierarchy = "date"
     ordering = ("date", "shift", "workcell")
 
+class SpotCheckReportForm(forms.ModelForm):
+    class Meta:
+        model = SpotCheckReport
+        fields = "__all__"
+    shift = get_radio_formfield(None, SHIFTS)
 class SpotCheckReportAdmin(admin.ModelAdmin):
+    form = SpotCheckReportForm
     list_display = ("date", "shift", "workcell", "part")
     list_filter = ("date",)
     date_hierarchy = "date"
