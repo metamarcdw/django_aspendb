@@ -177,10 +177,10 @@ class MaintenanceRecordForm(forms.ModelForm):
     parts_reordered = get_radio_formfield(None, YESNONA)
 class MaintenanceRecordAdmin(admin.ModelAdmin):
     form = MaintenanceRecordForm
-    list_display = ("date", "problem_code", "work_done")
-    list_filter = ("date", "problem_code")
-    date_hierarchy = "date"
-    ordering = ("date", "problem_code")
+    list_display = ("date_performed", "problem_code", "work_done")
+    list_filter = ("date_performed", "problem_code")
+    date_hierarchy = "date_performed"
+    ordering = ("date_performed", "problem_code")
 
 class MaintenanceRequestForm(forms.ModelForm):
     class Meta:

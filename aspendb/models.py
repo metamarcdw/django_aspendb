@@ -25,7 +25,8 @@ class Employee(models.Model):
 
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=40)
-    hire_date = models.DateField(validators=[date_validator])
+    hire_date = models.DateField(
+        default=datetime.date.today, validators=[date_validator])
     email = models.EmailField(blank=True)
     shift = models.CharField(max_length=3, choices=SHIFTS)
     training_level = models.IntegerField(choices=ONETOFIVE)
@@ -89,7 +90,8 @@ YESNONA = ( ('yes', 'Yes'),
 
 class ProductionSchedule(models.Model):
     workcell = models.ForeignKey(Workcell)
-    date = models.DateField(validators=[date_validator])
+    date = models.DateField(
+        default=datetime.date.today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
     part = ChainedForeignKey(Part,
         chained_field="workcell",
@@ -117,7 +119,8 @@ class StartOfShift(models.Model):
 
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
-    date = models.DateField(validators=[date_validator])
+    date = models.DateField(
+        default=datetime.date.today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
     process_verified = models.CharField(max_length=3, choices=YESNONA[:2])
@@ -160,7 +163,8 @@ class EndOfShift(models.Model):
 
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
-    date = models.DateField(validators=[date_validator])
+    date = models.DateField(
+        default=datetime.date.today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
     starting_shot = models.IntegerField(validators=[MinValueValidator(0)])
@@ -210,7 +214,8 @@ class ScrapReport(models.Model):
 
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
-    date = models.DateField(validators=[date_validator])
+    date = models.DateField(
+        default=datetime.date.today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
     part = ChainedForeignKey(Part,
         chained_field="workcell",
@@ -261,7 +266,8 @@ class LaborAllocationReport(models.Model):
 
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
-    date = models.DateField(validators=[date_validator])
+    date = models.DateField(
+        default=datetime.date.today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
     period = models.IntegerField(choices=ONETOFIVE)
@@ -277,7 +283,8 @@ class LaborAllocationReport(models.Model):
 class Downtime(models.Model):
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
-    date = models.DateField(validators=[date_validator])
+    date = models.DateField(
+        default=datetime.date.today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
     minutes = models.IntegerField(validators=[MinValueValidator(1)])
@@ -290,7 +297,8 @@ class Downtime(models.Model):
 class SpotCheckReport(models.Model):
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
-    date = models.DateField(validators=[date_validator])
+    date = models.DateField(
+        default=datetime.date.today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
     part = ChainedForeignKey(Part,
         chained_field="workcell",
@@ -320,9 +328,8 @@ MAINT_CODES = ( ("mech", "Mechanical"),
 class MaintenanceRecord(models.Model):
     employee = models.ForeignKey(
         Employee, verbose_name="Work performed by")
-    date = models.DateField(
-        validators=[date_validator],
-        verbose_name="Date performed")
+    date_performed = models.DateField(
+        default=datetime.date.today, validators=[date_validator])
 
     problem_code = models.CharField(max_length=5, choices=MAINT_CODES)
     work_done = models.CharField(max_length=50, blank=True)
@@ -342,7 +349,8 @@ class MaintenanceRecord(models.Model):
 class MaintenanceRequest(models.Model):
     created_by = models.ForeignKey(Employee, related_name="created_by")
     workcell = models.ForeignKey(Workcell, blank=True, null=True)
-    date = models.DateField(validators=[date_validator])
+    date = models.DateField(
+        default=datetime.date.today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
     approved_by = models.ForeignKey(Employee, related_name="approved_by")
