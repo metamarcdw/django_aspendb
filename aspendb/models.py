@@ -336,7 +336,7 @@ class SpotCheckReport(models.Model):
     time = models.TimeField(auto_now=True)
     qty_checked = models.IntegerField(validators=[MinValueValidator(0)])
     defects = models.CharField(max_length=50)
-    packer_initials = models.CharField(max_length=3)
+    packer_initials = models.CharField(max_length=15)
     comments = models.TextField(max_length=1000, blank=True)
 
     def __str__(self):
