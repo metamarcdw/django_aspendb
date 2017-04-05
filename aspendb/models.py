@@ -1,3 +1,5 @@
+import re
+
 from django.db import models
 from django import forms
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -15,7 +17,7 @@ ONETOFIVE = ((1, "1"),
             (5, "5"))
 
 def date_validator(value):
-    if value > datetime.date.today():
+    if value > timezone.localtime(timezone.now()).date():
         raise forms.ValidationError("The date cannot be in the future!")
 
 """
@@ -268,8 +270,8 @@ class ScrapReport(models.Model):
     def scrap_dict(txt):
         d = dict()
         for line in txt.split("\n"):
-            s, i = line.split(": ")
-            d[s] = int(i)
+            s, i = re.split(': |:|; |;|, |,| ', line)
+            d[s.strip()] = int(i.strip())
         return d
 
     def save(self, *args, **kwargs):
