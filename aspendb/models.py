@@ -1,8 +1,7 @@
-import datetime
-
 from django.db import models
 from django import forms
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.utils import timezone
 
 from smart_selects.db_fields import ChainedForeignKey
 
@@ -19,6 +18,28 @@ def date_validator(value):
     if value > datetime.date.today():
         raise forms.ValidationError("The date cannot be in the future!")
 
+"""
+def time_in_range(start, end, x):
+    # Return true if x is in the range [start, end]
+    if start <= end:
+        return start <= x <= end
+    else:
+        return start <= x or x <= end
+
+def get_current_shift():
+    first_start = datetime.time(6, 0, 0)
+    first_end = datetime.time(16, 30, 0)
+    second_start = datetime.time(16, 30, 0)
+    second_end = datetime.time(3, 0, 0)
+    now = timezone.now()
+    if time_in_range(first_start, first_end, now):
+        return SHIFTS[0][1]
+    elif time_in_range(second_start, second_end, now):
+        return SHIFTS[1][1]
+    else:
+        return None
+"""
+
 class Employee(models.Model):
     class Meta:
         unique_together = ("first_name", "last_name")
@@ -26,7 +47,8 @@ class Employee(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=40)
     hire_date = models.DateField(
-        default=datetime.date.today, validators=[date_validator])
+        default=timezone.localtime(timezone.now()).date,
+        validators=[date_validator])
     email = models.EmailField(blank=True)
     shift = models.CharField(max_length=3, choices=SHIFTS)
     training_level = models.IntegerField(choices=ONETOFIVE)
@@ -91,7 +113,8 @@ YESNONA = ( ('yes', 'Yes'),
 class ProductionSchedule(models.Model):
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
-        default=datetime.date.today, validators=[date_validator])
+        default=timezone.localtime(timezone.now()).date,
+        validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
     part = ChainedForeignKey(Part,
         chained_field="workcell",
@@ -120,7 +143,8 @@ class StartOfShift(models.Model):
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
-        default=datetime.date.today, validators=[date_validator])
+        default=timezone.localtime(timezone.now()).date,
+        validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
     process_verified = models.CharField(max_length=3, choices=YESNONA[:2])
@@ -164,7 +188,8 @@ class EndOfShift(models.Model):
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
-        default=datetime.date.today, validators=[date_validator])
+        default=timezone.localtime(timezone.now()).date,
+        validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
     starting_shot = models.IntegerField(validators=[MinValueValidator(0)])
@@ -215,7 +240,8 @@ class ScrapReport(models.Model):
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
-        default=datetime.date.today, validators=[date_validator])
+        default=timezone.localtime(timezone.now()).date,
+        validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
     part = ChainedForeignKey(Part,
         chained_field="workcell",
@@ -267,7 +293,8 @@ class LaborAllocationReport(models.Model):
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
-        default=datetime.date.today, validators=[date_validator])
+        default=timezone.localtime(timezone.now()).date,
+        validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
     period = models.IntegerField(choices=ONETOFIVE)
@@ -284,7 +311,8 @@ class Downtime(models.Model):
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
-        default=datetime.date.today, validators=[date_validator])
+        default=timezone.localtime(timezone.now()).date,
+        validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
     minutes = models.IntegerField(validators=[MinValueValidator(1)])
@@ -298,7 +326,8 @@ class SpotCheckReport(models.Model):
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
-        default=datetime.date.today, validators=[date_validator])
+        default=timezone.localtime(timezone.now()).date,
+        validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
     part = ChainedForeignKey(Part,
         chained_field="workcell",
@@ -329,7 +358,8 @@ class MaintenanceRecord(models.Model):
     employee = models.ForeignKey(
         Employee, verbose_name="Work performed by")
     date_performed = models.DateField(
-        default=datetime.date.today, validators=[date_validator])
+        default=timezone.localtime(timezone.now()).date,
+        validators=[date_validator])
 
     problem_code = models.CharField(max_length=5, choices=MAINT_CODES)
     work_done = models.CharField(max_length=50, blank=True)
@@ -350,7 +380,8 @@ class MaintenanceRequest(models.Model):
     created_by = models.ForeignKey(Employee, related_name="created_by")
     workcell = models.ForeignKey(Workcell, blank=True, null=True)
     date = models.DateField(
-        default=datetime.date.today, validators=[date_validator])
+        default=timezone.localtime(timezone.now()).date,
+        validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
     approved_by = models.ForeignKey(Employee, related_name="approved_by")
