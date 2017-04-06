@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib import admin
 from django import forms
 from aspendb.models import *
@@ -5,9 +7,29 @@ from aspendb.models import *
 admin.site.site_title = "Aspen Technologies Database"
 admin.site.site_header = "Aspen Technologies Database"
 
+def time_in_range(start, end, x):
+    # Return true if x is in the range [start, end]
+    if start <= end:
+        return start <= x <= end
+    else:
+        return start <= x or x <= end
+
+def get_current_shift():
+    first_start = datetime.time(6, 0, 0)
+    first_end = datetime.time(16, 30, 0)
+    second_start = datetime.time(16, 30, 0)
+    second_end = datetime.time(3, 0, 0)
+    now = datetime.datetime.now().time()
+    if time_in_range(first_start, first_end, now):
+        return SHIFTS[0][1]
+    elif time_in_range(second_start, second_end, now):
+        return SHIFTS[1][1]
+    else:
+        return ""
+
 def get_radio_formfield(label, choices):
     return forms.ChoiceField(label=label, choices=choices,
-        initial="", widget=forms.widgets.RadioSelect())
+        initial=get_current_shift(), widget=forms.widgets.RadioSelect())
 
 class EmployeeForm(forms.ModelForm):
     class Meta:

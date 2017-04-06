@@ -17,30 +17,8 @@ ONETOFIVE = ((1, "1"),
             (5, "5"))
 
 def date_validator(value):
-    if value > timezone.now():
+    if value > timezone.now().date():
         raise forms.ValidationError("The date cannot be in the future!")
-
-"""
-def time_in_range(start, end, x):
-    # Return true if x is in the range [start, end]
-    if start <= end:
-        return start <= x <= end
-    else:
-        return start <= x or x <= end
-
-def get_current_shift():
-    first_start = datetime.time(6, 0, 0)
-    first_end = datetime.time(16, 30, 0)
-    second_start = datetime.time(16, 30, 0)
-    second_end = datetime.time(3, 0, 0)
-    now = timezone.now()
-    if time_in_range(first_start, first_end, now):
-        return SHIFTS[0][1]
-    elif time_in_range(second_start, second_end, now):
-        return SHIFTS[1][1]
-    else:
-        return None
-"""
 
 class Employee(models.Model):
     class Meta:
@@ -265,7 +243,7 @@ class ScrapReport(models.Model):
     def scrap_dict(txt):
         d = dict()
         for line in txt.split("\n"):
-            s, i = re.split(': |:|; |;|, |,| ', line)
+            s, i = re.split(': |:|; |;|, |,', line)
             d[s.strip()] = int(i.strip())
         return d
 
