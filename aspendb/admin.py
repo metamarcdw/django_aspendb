@@ -27,9 +27,45 @@ def get_current_shift():
     else:
         return ""
 
+def get_my_workcell(request):
+    if request.user.is_authenticated():
+        username = request.user.username
+        workcells = Workcell.objects.values_list('name', flat=True)
+        if username in workcells:
+            return Workcell.objects.get(name=username)
+
+def get_initials(self, request):
+    leader = ""
+    workcell_name = ""
+
+    my_workcell = get_my_workcell(request)
+    if my_workcell:
+        shift = get_current_shift()
+        if shift == "1st":
+            leader = my_workcell.cell_leader_1st
+        elif shift == "2nd":
+            leader = my_workcell.cell_leader_2nd
+        workcell_name = my_workcell.name
+
+    return {'employee': leader,
+            'workcell': workcell_name}
+
+def get_initials_eos(self, request):
+    initials = get_initials(None, request)
+    today = tz.localize(datetime.datetime.now()).date()
+    shift = get_current_shift()
+    schedules = ProductionSchedule.objects.filter(
+        date=today).filter(
+        shift=shift).filter(
+        workcell=initials["workcell"])
+    total = sum(schedules.values_list('total_shots', flat=True))
+    initials["scheduled_shots"] = total
+    return initials
+
 def get_radio_formfield(label, choices, initial=None):
     return forms.ChoiceField(label=label, choices=choices,
         initial=initial, widget=forms.widgets.RadioSelect())
+
 
 class EmployeeForm(forms.ModelForm):
     class Meta:
@@ -95,6 +131,7 @@ class StartOfShiftForm(forms.ModelForm):
         "parts on the same turntable?", YESNONA[:2])
 
 class StartOfShiftAdmin(admin.ModelAdmin):
+    get_changeform_initial_data = get_initials
     form = StartOfShiftForm
     list_display = ("date", "shift", "workcell")
     list_filter = ("date",)
@@ -123,6 +160,7 @@ class EndOfShiftForm(forms.ModelForm):
         "Is spray pot ground connected?", YESNONA)
 
 class EndOfShiftAdmin(admin.ModelAdmin):
+    get_changeform_initial_data = get_initials_eos
     form = EndOfShiftForm
     exclude = ("total_shots", "oee", "scrap_percent")
     list_display = (
@@ -144,6 +182,7 @@ class ScrapReportForm(forms.ModelForm):
         fields = "__all__"
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
 class ScrapReportAdmin(admin.ModelAdmin):
+    get_changeform_initial_data = get_initials
     form = ScrapReportForm
     exclude = ("bad_mix", "dents", "mold_release", "non_fill",
                 "collapse", "tears", "trim", "voilds", "open_voilds",
@@ -161,6 +200,7 @@ class LaborAllocationReportForm(forms.ModelForm):
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
     period = get_radio_formfield(None, ONETOFIVE)
 class LaborAllocationReportAdmin(admin.ModelAdmin):
+    get_changeform_initial_data = get_initials
     form = LaborAllocationReportForm
     list_display = ("date", "shift", "workcell", "period")
     list_filter = ("date",)
@@ -173,6 +213,7 @@ class DowntimeForm(forms.ModelForm):
         fields = "__all__"
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
 class DowntimeAdmin(admin.ModelAdmin):
+    get_changeform_initial_data = get_initials
     form = DowntimeForm
     list_display = ("date", "shift", "workcell", "code")
     list_filter = ("date",)
@@ -185,6 +226,7 @@ class SpotCheckReportForm(forms.ModelForm):
         fields = "__all__"
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
 class SpotCheckReportAdmin(admin.ModelAdmin):
+    get_changeform_initial_data = get_initials
     form = SpotCheckReportForm
     list_display = ("date", "shift", "workcell", "part")
     list_filter = ("date",)
@@ -211,6 +253,7 @@ class MaintenanceRequestForm(forms.ModelForm):
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
     urgency = get_radio_formfield(None, ONETOFIVE)
 class MaintenanceRequestAdmin(admin.ModelAdmin):
+    get_changeform_initial_data = get_initials
     form = MaintenanceRequestForm
     list_display = ("date", "shift", "problem", "status")
     list_filter = ("date",)
