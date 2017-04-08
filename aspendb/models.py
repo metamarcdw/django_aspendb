@@ -22,7 +22,7 @@ def get_today():
     return tz.localize(datetime.datetime.now()).date()
 
 def date_validator(value):
-    if value > tz.localize(datetime.datetime.now()).date():
+    if value > get_today():
         raise forms.ValidationError("The date cannot be in the future!")
 
 class Employee(models.Model):
