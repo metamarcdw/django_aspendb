@@ -109,7 +109,8 @@ class ProductionSchedule(models.Model):
     total_shots = models.IntegerField()
 
     def get_total_shots(self):
-        return int(self.shots * self.workcell.turns_per_hour * self.hours)
+        return int(round(
+            self.shots * self.workcell.turns_per_hour * self.hours))
 
     def save(self, *args, **kwargs):
         self.total_shots = self.get_total_shots()
