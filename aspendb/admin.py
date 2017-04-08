@@ -19,7 +19,7 @@ def get_current_shift():
     first_end = datetime.time(16, 30, 0)
     second_start = datetime.time(16, 30, 0)
     second_end = datetime.time(3, 0, 0)
-    now = datetime.datetime.now().time()
+    now = tz.localize(datetime.datetime.now()).time()
     if time_in_range(first_start, first_end, now):
         return SHIFTS[0][1]
     elif time_in_range(second_start, second_end, now):
