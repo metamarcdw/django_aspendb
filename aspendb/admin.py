@@ -27,15 +27,15 @@ def get_current_shift():
     else:
         return ""
 
-def get_radio_formfield(label, choices):
+def get_radio_formfield(label, choices, initial=None):
     return forms.ChoiceField(label=label, choices=choices,
-        initial=get_current_shift(), widget=forms.widgets.RadioSelect())
+        initial=initial, widget=forms.widgets.RadioSelect())
 
 class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
         fields = "__all__"
-    shift = get_radio_formfield(None, SHIFTS)
+    shift = get_radio_formfield(None, SHIFTS, get_current_shift())
     training_level = get_radio_formfield(None, ONETOFIVE)
 class EmployeeAdmin(admin.ModelAdmin):
     form = EmployeeForm
@@ -57,7 +57,7 @@ class ProductionScheduleForm(forms.ModelForm):
     class Meta:
         model = ProductionSchedule
         fields = "__all__"
-    shift = get_radio_formfield(None, SHIFTS)
+    shift = get_radio_formfield(None, SHIFTS, get_current_shift())
 class ProductionScheduleAdmin(admin.ModelAdmin):
     form = ProductionScheduleForm
     exclude = ("total_shots",)
@@ -71,7 +71,7 @@ class StartOfShiftForm(forms.ModelForm):
     class Meta:
         model = StartOfShift
         fields = "__all__"
-    shift = get_radio_formfield(None, SHIFTS)
+    shift = get_radio_formfield(None, SHIFTS, get_current_shift())
     process_verified = get_radio_formfield(
         "Process parameters verified?", YESNONA[:2])
     weights_verified = get_radio_formfield(
@@ -106,7 +106,7 @@ class EndOfShiftForm(forms.ModelForm):
     class Meta:
         model = EndOfShift
         fields = "__all__"
-    shift = get_radio_formfield(None, SHIFTS)
+    shift = get_radio_formfield(None, SHIFTS, get_current_shift())
     spray_pots = get_radio_formfield(
         "Is your spray pot topped off?", YESNONA)
     adequate_poly = get_radio_formfield(
@@ -142,7 +142,7 @@ class ScrapReportForm(forms.ModelForm):
     class Meta:
         model = ScrapReport
         fields = "__all__"
-    shift = get_radio_formfield(None, SHIFTS)
+    shift = get_radio_formfield(None, SHIFTS, get_current_shift())
 class ScrapReportAdmin(admin.ModelAdmin):
     form = ScrapReportForm
     exclude = ("bad_mix", "dents", "mold_release", "non_fill",
@@ -158,7 +158,7 @@ class LaborAllocationReportForm(forms.ModelForm):
     class Meta:
         model = LaborAllocationReport
         fields = "__all__"
-    shift = get_radio_formfield(None, SHIFTS)
+    shift = get_radio_formfield(None, SHIFTS, get_current_shift())
     period = get_radio_formfield(None, ONETOFIVE)
 class LaborAllocationReportAdmin(admin.ModelAdmin):
     form = LaborAllocationReportForm
@@ -171,7 +171,7 @@ class DowntimeForm(forms.ModelForm):
     class Meta:
         model = Downtime
         fields = "__all__"
-    shift = get_radio_formfield(None, SHIFTS)
+    shift = get_radio_formfield(None, SHIFTS, get_current_shift())
 class DowntimeAdmin(admin.ModelAdmin):
     form = DowntimeForm
     list_display = ("date", "shift", "workcell", "code")
@@ -183,7 +183,7 @@ class SpotCheckReportForm(forms.ModelForm):
     class Meta:
         model = SpotCheckReport
         fields = "__all__"
-    shift = get_radio_formfield(None, SHIFTS)
+    shift = get_radio_formfield(None, SHIFTS, get_current_shift())
 class SpotCheckReportAdmin(admin.ModelAdmin):
     form = SpotCheckReportForm
     list_display = ("date", "shift", "workcell", "part")
@@ -208,7 +208,7 @@ class MaintenanceRequestForm(forms.ModelForm):
     class Meta:
         model = MaintenanceRequest
         fields = "__all__"
-    shift = get_radio_formfield(None, SHIFTS)
+    shift = get_radio_formfield(None, SHIFTS, get_current_shift())
     urgency = get_radio_formfield(None, ONETOFIVE)
 class MaintenanceRequestAdmin(admin.ModelAdmin):
     form = MaintenanceRequestForm
