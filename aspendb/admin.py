@@ -52,10 +52,9 @@ def get_initials(self, request):
 
 def get_initials_eos(self, request):
     initials = get_initials(None, request)
-    today = tz.localize(datetime.datetime.now()).date()
     shift = get_current_shift()
     schedules = ProductionSchedule.objects.filter(
-        date=today).filter(
+        date=get_today()).filter(
         shift=shift).filter(
         workcell=initials["workcell"])
     total = sum(schedules.values_list('total_shots', flat=True))

@@ -18,6 +18,9 @@ ONETOFIVE = ((1, "1"),
             (4, "4"),
             (5, "5"))
 
+def get_today():
+    return tz.localize(datetime.datetime.now()).date()
+
 def date_validator(value):
     if value > tz.localize(datetime.datetime.now()).date():
         raise forms.ValidationError("The date cannot be in the future!")
@@ -29,8 +32,7 @@ class Employee(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=40)
     hire_date = models.DateField(
-        default=tz.localize(datetime.datetime.now()),
-        validators=[date_validator])
+        default=get_today, validators=[date_validator])
     email = models.EmailField(blank=True)
     shift = models.CharField(max_length=3, choices=SHIFTS)
     training_level = models.IntegerField(choices=ONETOFIVE)
@@ -95,8 +97,7 @@ YESNONA = ( ('yes', 'Yes'),
 class ProductionSchedule(models.Model):
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
-        default=tz.localize(datetime.datetime.now()),
-        validators=[date_validator])
+        default=get_today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
     part = ChainedForeignKey(Part,
         chained_field="workcell",
@@ -125,8 +126,7 @@ class StartOfShift(models.Model):
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
-        default=tz.localize(datetime.datetime.now()),
-        validators=[date_validator])
+        default=get_today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
     process_verified = models.CharField(max_length=3, choices=YESNONA[:2])
@@ -170,8 +170,7 @@ class EndOfShift(models.Model):
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
-        default=tz.localize(datetime.datetime.now()),
-        validators=[date_validator])
+        default=get_today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
     starting_shot = models.IntegerField(validators=[MinValueValidator(0)])
@@ -222,8 +221,7 @@ class ScrapReport(models.Model):
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
-        default=tz.localize(datetime.datetime.now()),
-        validators=[date_validator])
+        default=get_today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
     part = ChainedForeignKey(Part,
         chained_field="workcell",
@@ -275,8 +273,7 @@ class LaborAllocationReport(models.Model):
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
-        default=tz.localize(datetime.datetime.now()),
-        validators=[date_validator])
+        default=get_today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
     period = models.IntegerField(choices=ONETOFIVE)
@@ -293,8 +290,7 @@ class Downtime(models.Model):
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
-        default=tz.localize(datetime.datetime.now()),
-        validators=[date_validator])
+        default=get_today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
     minutes = models.IntegerField(validators=[MinValueValidator(1)])
@@ -308,8 +304,7 @@ class SpotCheckReport(models.Model):
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
-        default=tz.localize(datetime.datetime.now()),
-        validators=[date_validator])
+        default=get_today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
     part = ChainedForeignKey(Part,
         chained_field="workcell",
@@ -340,8 +335,7 @@ class MaintenanceRecord(models.Model):
     employee = models.ForeignKey(
         Employee, verbose_name="Work performed by")
     date_performed = models.DateField(
-        default=tz.localize(datetime.datetime.now()),
-        validators=[date_validator])
+        default=get_today, validators=[date_validator])
 
     problem_code = models.CharField(max_length=5, choices=MAINT_CODES)
     work_done = models.CharField(max_length=50, blank=True)
@@ -362,8 +356,7 @@ class MaintenanceRequest(models.Model):
     created_by = models.ForeignKey(Employee, related_name="created_by")
     workcell = models.ForeignKey(Workcell, blank=True, null=True)
     date = models.DateField(
-        default=tz.localize(datetime.datetime.now()),
-        validators=[date_validator])
+        default=get_today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
     approved_by = models.ForeignKey(Employee, related_name="approved_by")
