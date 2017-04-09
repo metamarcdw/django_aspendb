@@ -47,11 +47,11 @@ def get_initials(self, request):
             leader = my_workcell.cell_leader_2nd
         workcell_name = my_workcell.name
 
-    return {'employee': leader,
+    return {'employee': leader, 'created_by': leader,
             'workcell': workcell_name}
 
 def get_initials_eos(self, request):
-    initials = get_initials(None, request)
+    initials = get_initials(self, request)
     shift = get_current_shift()
     schedules = ProductionSchedule.objects.filter(
         date=get_today()).filter(

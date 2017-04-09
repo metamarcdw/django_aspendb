@@ -351,7 +351,7 @@ class MaintenanceRecord(models.Model):
 
     def __str__(self):
         return "{}, {}: {}".format(
-            self.date, self.problem_code, self.work_done)
+            self.date_performed, self.problem_code, self.work_done)
 
 class MaintenanceRequest(models.Model):
     created_by = models.ForeignKey(Employee, related_name="created_by")
