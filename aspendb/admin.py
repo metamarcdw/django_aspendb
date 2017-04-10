@@ -65,6 +65,9 @@ def get_radio_formfield(label, choices, initial=None):
     return forms.ChoiceField(label=label, choices=choices,
         initial=initial, widget=forms.widgets.RadioSelect())
 
+def get_integer_formfield():
+    return forms.IntegerField(localize=False)
+
 
 class EmployeeForm(forms.ModelForm):
     class Meta:
@@ -93,6 +96,7 @@ class ProductionScheduleForm(forms.ModelForm):
         model = ProductionSchedule
         fields = "__all__"
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
+    shots = get_integer_formfield()
 class ProductionScheduleAdmin(admin.ModelAdmin):
     form = ProductionScheduleForm
     exclude = ("total_shots",)
@@ -107,6 +111,8 @@ class StartOfShiftForm(forms.ModelForm):
         model = StartOfShift
         fields = "__all__"
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
+    poly_pressure = get_integer_formfield()
+    iso_pressure = get_integer_formfield()
     process_verified = get_radio_formfield(
         "Process parameters verified?", YESNONA[:2])
     weights_verified = get_radio_formfield(
@@ -143,6 +149,11 @@ class EndOfShiftForm(forms.ModelForm):
         model = EndOfShift
         fields = "__all__"
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
+    starting_shot = get_integer_formfield()
+    ending_shot = get_integer_formfield()
+    scheduled_shots = get_integer_formfield()
+    missed_shots = get_integer_formfield()
+    total_scrap = get_integer_formfield()
     spray_pots = get_radio_formfield(
         "Is your spray pot topped off?", YESNONA)
     adequate_poly = get_radio_formfield(
@@ -157,6 +168,7 @@ class EndOfShiftForm(forms.ModelForm):
         "Are all supplies in cell leader cabinet stocked?", YESNONA)
     pot_grounded = get_radio_formfield(
         "Is spray pot ground connected?", YESNONA)
+    employee_count = get_integer_formfield()
 
 class EndOfShiftAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials_eos
