@@ -51,14 +51,24 @@ def get_initials(self, request):
             'workcell': workcell_name}
 
 def get_initials_eos(self, request):
-    initials = get_initials(self, request)
+    today = get_today()
     shift = get_current_shift()
+    initials = get_initials(self, request)
+
     schedules = ProductionSchedule.objects.filter(
-        date=get_today()).filter(
+        date=today).filter(
         shift=shift).filter(
         workcell=initials["workcell"])
-    total = sum(schedules.values_list('total_shots', flat=True))
-    initials["scheduled_shots"] = total
+    total_shots = sum(schedules.values_list('total_shots', flat=True))
+    initials["scheduled_shots"] = total_shots
+
+    scrap_reports = ScrapReport.objects.filter(
+        date=today).filter(
+        shift=shift).filter(
+        workcell=initials["workcell"])
+    total_scrap = sum(scrap_reports.values_list('total_scrap', flat=True))
+    initials["total_scrap"] = total_scrap
+
     return initials
 
 def get_radio_formfield(label, choices, initial=None):
