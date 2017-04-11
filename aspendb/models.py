@@ -373,4 +373,27 @@ class MaintenanceRequest(models.Model):
         return "{}, {}: {}".format(
             self.date, self.workcell.name, self.problem)
 
+class ProcessActivityReport(models.Model):
+    employee = models.ForeignKey(Employee)
+    workcell = models.ForeignKey(Workcell)
+    date = models.DateField(
+        default=get_today, validators=[date_validator])
+    shift = models.CharField(max_length=3, choices=SHIFTS)
+
+    part = ChainedForeignKey(Part,
+        chained_field="workcell",
+        chained_model_field="workcell",
+        blank=True, null=True)
+
+    defect = models.CharField(max_length=20, blank=True)
+    process_change = models.CharField(max_length=50)
+    effect = models.IntegerField(choices=ONETOFIVE)
+    change_reverted = models.CharField(max_length=3, choices=YESNONA[:2])
+    comments = models.TextField(max_length=1000, blank=True)
+
+    def __str__(self):
+        return "{}, {}, {}: {}".format(
+            self.date, self.shift,
+            self.workcell.name, self.defect)
+
 

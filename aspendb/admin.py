@@ -281,6 +281,20 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
     date_hierarchy = "date"
     ordering = ("date",)
 
+class ProcessActivityReportForm(forms.ModelForm):
+    class Meta:
+        model = ProcessActivityReport
+        fields = "__all__"
+    shift = get_radio_formfield(None, SHIFTS, get_current_shift())
+    effect = get_radio_formfield(None, ONETOFIVE, ONETOFIVE[2][1])
+    change_reverted = get_radio_formfield(None, YESNONA[:2])
+class ProcessActivityReportAdmin(admin.ModelAdmin):
+    form = ProcessActivityReportForm
+    list_display = ("defect", "date", "shift", "workcell")
+    list_filter = ("date", "shift", "workcell")
+    date_hierarchy = "date"
+    ordering = ("date", "shift", "workcell")
+
 # Register your models here.
 admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(Department)
@@ -297,4 +311,5 @@ admin.site.register(Downtime, DowntimeAdmin)
 admin.site.register(SpotCheckReport, SpotCheckReportAdmin)
 admin.site.register(MaintenanceRecord, MaintenanceRecordAdmin)
 admin.site.register(MaintenanceRequest, MaintenanceRequestAdmin)
+admin.site.register(ProcessActivityReport, ProcessActivityReportAdmin)
 
