@@ -311,7 +311,7 @@ class SpotCheckReport(models.Model):
         chained_field="workcell",
         chained_model_field="workcell")
 
-    time = models.TimeField(auto_now=True)
+    timestamp = models.TimeField(auto_now=True)
     qty_checked = models.IntegerField(validators=[MinValueValidator(0)])
     defects = models.CharField(max_length=50)
     packer_initials = models.CharField(max_length=15)
@@ -379,12 +379,12 @@ class ProcessActivityReport(models.Model):
     date = models.DateField(
         default=get_today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
-
     part = ChainedForeignKey(Part,
         chained_field="workcell",
         chained_model_field="workcell",
         blank=True, null=True)
 
+    timestamp = models.TimeField(auto_now=True)
     defect = models.CharField(max_length=20, blank=True)
     process_change = models.CharField(max_length=50)
     effect = models.IntegerField(choices=ONETOFIVE)
