@@ -290,10 +290,89 @@ class ProcessActivityReportForm(forms.ModelForm):
     change_reverted = get_radio_formfield(None, YESNONA[:2])
 class ProcessActivityReportAdmin(admin.ModelAdmin):
     form = ProcessActivityReportForm
-    list_display = ("defect", "date", "shift", "workcell")
+    list_display = ("process_change", "date", "shift", "workcell")
     list_filter = ("date", "shift", "workcell")
     date_hierarchy = "date"
     ordering = ("date", "shift", "workcell")
+
+class LPASafetyForm(forms.ModelForm):
+    class Meta:
+        model = LPASafety
+        fields = "__all__"
+    ppe = get_radio_formfield(
+        None, YESNONA[:2])
+    ppe_info = get_radio_formfield(
+        None, YESNONA[:2])
+    sds = get_radio_formfield(
+        None, YESNONA[:2])
+    iso_exposure = get_radio_formfield(
+        None, YESNONA[:2])
+class LPASafetyAdmin(admin.ModelAdmin):
+    form = LPASafetyForm
+    list_display = ("date", "employee")
+    list_filter = ("date",)
+    date_hierarchy = "date"
+    ordering = ("date",)
+
+
+class LayeredProcessAuditForm(forms.ModelForm):
+    class Meta:
+        model = LayeredProcessAudit
+        fields = "__all__"
+    shift = get_radio_formfield(None, SHIFTS, get_current_shift())
+    verified_parameters = get_radio_formfield(
+        None, YESNONA)
+    weight_inspection = get_radio_formfield(
+        None, YESNONA)
+    chemicals_tracked = get_radio_formfield(
+        None, YESNONA)
+    components_tracked = get_radio_formfield(
+        None, YESNONA)
+
+    setup_posted = get_radio_formfield(
+        None, YESNONA)
+    chemicals_correct = get_radio_formfield(
+        None, YESNONA)
+    event_missed_shot = get_radio_formfield(
+        None, YESNONA)
+
+    demold_criteria = get_radio_formfield(
+        None, YESNONA)
+    demold_ncm = get_radio_formfield(
+        None, YESNONA)
+    mold_release = get_radio_formfield(
+        None, YESNONA)
+
+    work_instructions = get_radio_formfield(
+        None, YESNONA)
+    proper_equipment = get_radio_formfield(
+        None, YESNONA)
+    trim_criteria = get_radio_formfield(
+        None, YESNONA)
+    inspecting_prior = get_radio_formfield(
+        None, YESNONA)
+    trim_dcm = get_radio_formfield(
+        None, YESNONA)
+    quality_alerts = get_radio_formfield(
+        None, YESNONA)
+    boxes_marked = get_radio_formfield(
+        None, YESNONA)
+    pack_criteria = get_radio_formfield(
+        None, YESNONA)
+    labels_match = get_radio_formfield(
+        None, YESNONA)
+    fifo_product = get_radio_formfield(
+        None, YESNONA)
+    product_tracked = get_radio_formfield(
+        None, YESNONA)
+
+class LayeredProcessAuditAdmin(admin.ModelAdmin):
+    form = LayeredProcessAuditForm
+    list_display = ("workcell", "date", "shift", "employee")
+    list_filter = ("date", "shift", "workcell")
+    date_hierarchy = "date"
+    ordering = ("date", "shift", "workcell")
+
 
 # Register your models here.
 admin.site.register(Employee, EmployeeAdmin)
@@ -312,4 +391,6 @@ admin.site.register(SpotCheckReport, SpotCheckReportAdmin)
 admin.site.register(MaintenanceRecord, MaintenanceRecordAdmin)
 admin.site.register(MaintenanceRequest, MaintenanceRequestAdmin)
 admin.site.register(ProcessActivityReport, ProcessActivityReportAdmin)
+admin.site.register(LPASafety, LPASafetyAdmin)
+admin.site.register(LayeredProcessAudit, LayeredProcessAuditAdmin)
 
