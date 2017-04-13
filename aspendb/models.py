@@ -63,12 +63,27 @@ class Workcell(models.Model):
         validators=[nospace_validator],
         primary_key=True)
     foam_system = models.CharField(max_length=30)
-    turns_per_hour = models.DecimalField(
-        max_digits=4, decimal_places=2, default=10)
+    table_time_minutes = models.IntegerField(default=0,
+        validators=[MaxValueValidator(10), MinValueValidator(0)])
+    table_time_seconds = models.IntegerField(default=0,
+        validators=[MaxValueValidator(60), MinValueValidator(0)])
+    turns_per_hour = models.DecimalField(blank=True, max_digits=4, decimal_places=2)
     cell_leader_1st = models.ForeignKey(
         Employee, related_name="cell_leader_1st", blank=True, null=True)
     cell_leader_2nd = models.ForeignKey(
         Employee, related_name="cell_leader_2nd", blank=True, null=True)
+
+    def get_tph(self):
+        minutes = self.table_time_minutes + (self.table_time_seconds / 60)
+        if minutes:
+            return 60 / minutes
+        else:
+            return 0
+
+    def save(self, *args, **kwargs):
+        if not self.turns_per_hour:
+            self.turns_per_hour = self.get_tph()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
