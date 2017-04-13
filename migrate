@@ -1,0 +1,2 @@
+./manage.py migrate
+sudo systemctl restart mysql.service
