@@ -300,13 +300,14 @@ class LPASafetyForm(forms.ModelForm):
         model = LPASafety
         fields = "__all__"
     ppe = get_radio_formfield(
-        None, YESNONA[:2])
+        "What is PPE?", YESNONA[:2])
     ppe_info = get_radio_formfield(
-        None, YESNONA[:2])
+        "Where can you find information for " + \
+        "the PPE you must wear?", YESNONA[:2])
     sds = get_radio_formfield(
-        None, YESNONA[:2])
+        "What is the SDS and where would you find it?", YESNONA[:2])
     iso_exposure = get_radio_formfield(
-        None, YESNONA[:2])
+        "Are you ever exposed to isocyanate?", YESNONA[:2])
 class LPASafetyAdmin(admin.ModelAdmin):
     form = LPASafetyForm
     list_display = ("date", "employee")
@@ -321,50 +322,63 @@ class LayeredProcessAuditForm(forms.ModelForm):
         fields = "__all__"
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
     verified_parameters = get_radio_formfield(
-        None, YESNONA)
+        "Has team leader verified that the processing parameters on " + \
+        "the Process Setup sheet match the actual machine setup?", YESNONA)
     weight_inspection = get_radio_formfield(
-        None, YESNONA)
+        "Has the In-Process Weight & Gage Inspection been " + \
+        "performed as required by quality?", YESNONA)
     chemicals_tracked = get_radio_formfield(
-        None, YESNONA)
+        "Does the Raw Material in use at the mix unit match the " + \
+        "information on the lot Traceability form?", YESNONA)
     components_tracked = get_radio_formfield(
-        None, YESNONA)
+        "Is the procedure for Lot Tracking of components " + \
+        "being followed correctly?", YESNONA)
 
     setup_posted = get_radio_formfield(
-        None, YESNONA)
+        "Is the set-up sheet posted?", YESNONA)
     chemicals_correct = get_radio_formfield(
-        None, YESNONA)
+        "Are Raw materials in use correct per set-up sheet?", YESNONA)
     event_missed_shot = get_radio_formfield(
-        None, YESNONA)
+        "Does employee know what to do in the " + \
+        "event of a missed shot?", YESNONA)
 
     demold_criteria = get_radio_formfield(
-        None, YESNONA)
+        "Does employee know the acceptance criteria for the " + \
+        "part(s) they are demolding?", YESNONA)
     demold_ncm = get_radio_formfield(
-        None, YESNONA)
+        "Does employee know what to do with " + \
+        "Non-Conforming Material?", YESNONA)
     mold_release = get_radio_formfield(
-        None, YESNONA)
+        "Visual check for proper application of mold release.", YESNONA)
 
     work_instructions = get_radio_formfield(
-        None, YESNONA)
+        "Are current work intructions available?", YESNONA)
     proper_equipment = get_radio_formfield(
-        None, YESNONA)
+        "Does the operator have the proper equipment to " + \
+        "perform their job duties?", YESNONA)
     trim_criteria = get_radio_formfield(
-        None, YESNONA)
+        "Does employee know the acceptance criteria for the " + \
+        "part(s) they are inspecting?", YESNONA)
     inspecting_prior = get_radio_formfield(
-        None, YESNONA)
+        "Are parts inspected prior to trim?", YESNONA)
     trim_dcm = get_radio_formfield(
-        None, YESNONA)
+        "Is the Control of Non-Conforming Product Procedure " + \
+        "being followed?", YESNONA)
     quality_alerts = get_radio_formfield(
-        None, YESNONA)
+        "If there are quality alerts posted for any part in the cell, " + \
+        "do employees have knowledge of QA?", YESNONA)
     boxes_marked = get_radio_formfield(
-        None, YESNONA)
+        "Are boxes properly marked with the Shift " + \
+        "and Operator I.D.?", YESNONA)
     pack_criteria = get_radio_formfield(
-        None, YESNONA)
+        "Do parts meet acceptance criteria and " + \
+        "are correct parts in box?", YESNONA)
     labels_match = get_radio_formfield(
-        None, YESNONA)
+        "Does part# on label match parts in box?", YESNONA)
     fifo_product = get_radio_formfield(
-        None, YESNONA)
+        "Is FIFO being followed for all finished product?", YESNONA)
     product_tracked = get_radio_formfield(
-        None, YESNONA)
+        "Is final audit process correctly followed?", YESNONA)
 
 class LayeredProcessAuditAdmin(admin.ModelAdmin):
     form = LayeredProcessAuditForm
