@@ -148,6 +148,8 @@ class StartOfShift(models.Model):
     process_verified = models.CharField(max_length=3, choices=YESNONA[:2])
     weights_verified = models.CharField(max_length=3, choices=YESNONA[:2])
 
+    starting_shot = models.IntegerField(
+        default=0, validators=[MinValueValidator(0)])
     mix_ratio = models.FloatField(
         validators=[MaxValueValidator(2), MinValueValidator(0)])
     poly_temp = models.FloatField(
@@ -189,7 +191,6 @@ class EndOfShift(models.Model):
         default=get_today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
-    starting_shot = models.IntegerField(validators=[MinValueValidator(0)])
     ending_shot = models.IntegerField(validators=[MinValueValidator(1)])
     scheduled_shots = models.IntegerField(validators=[MinValueValidator(1)])
     missed_shots = models.IntegerField(validators=[MinValueValidator(0)])
@@ -212,7 +213,13 @@ class EndOfShift(models.Model):
     scrap_percent = models.DecimalField(max_digits=5, decimal_places=2)
 
     def get_total_shots(self):
-        return self.ending_shot - self.starting_shot
+        sos = StartOfShift.objects.filter(
+            date=self.date).filter(
+            shift=self.shift).filter(
+            workcell=self.workcell)
+        if not sos:
+            raise Exception("No StartOfShift entry recorded for this workcell.")
+        return self.ending_shot - sos[0].starting_shot
 
     def get_oee(self):
         return (self.total_shots / self.scheduled_shots) * 100

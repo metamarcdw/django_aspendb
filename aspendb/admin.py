@@ -75,8 +75,8 @@ def get_radio_formfield(label, choices, initial=None):
     return forms.ChoiceField(label=label, choices=choices,
         initial=initial, widget=forms.widgets.RadioSelect())
 
-def get_integer_formfield():
-    return forms.IntegerField(localize=False)
+def get_integer_formfield(initial=None):
+    return forms.IntegerField(initial=initial, localize=False)
 
 
 class EmployeeForm(forms.ModelForm):
@@ -121,6 +121,7 @@ class StartOfShiftForm(forms.ModelForm):
         model = StartOfShift
         fields = "__all__"
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
+    starting_shot = get_integer_formfield(initial=0)
     poly_pressure = get_integer_formfield()
     iso_pressure = get_integer_formfield()
     process_verified = get_radio_formfield(
@@ -159,7 +160,6 @@ class EndOfShiftForm(forms.ModelForm):
         model = EndOfShift
         fields = "__all__"
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
-    starting_shot = get_integer_formfield()
     ending_shot = get_integer_formfield()
     scheduled_shots = get_integer_formfield()
     missed_shots = get_integer_formfield()
