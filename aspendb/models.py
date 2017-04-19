@@ -148,8 +148,7 @@ class StartOfShift(models.Model):
     process_verified = models.CharField(max_length=3, choices=YESNONA[:2])
     weights_verified = models.CharField(max_length=3, choices=YESNONA[:2])
 
-    starting_shot = models.IntegerField(
-        default=0, validators=[MinValueValidator(0)])
+    starting_shot = models.IntegerField(validators=[MinValueValidator(0)])
     mix_ratio = models.FloatField(
         validators=[MaxValueValidator(2), MinValueValidator(0)])
     poly_temp = models.FloatField(
