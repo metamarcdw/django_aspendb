@@ -417,19 +417,6 @@ class ProcessActivityReport(models.Model):
             self.date, self.shift,
             self.workcell.name, self.defect)
 
-class LPASafety(models.Model):
-    employee = models.ForeignKey(Employee)
-    date = models.DateField(default=get_today, validators=[date_validator])
-
-    ppe = models.CharField(max_length=3, choices=YESNONA[:2])
-    ppe_info = models.CharField(max_length=3, choices=YESNONA[:2])
-    sds = models.CharField(max_length=3, choices=YESNONA[:2])
-    iso_exposure = models.CharField(max_length=3, choices=YESNONA[:2])
-
-    def __str__(self):
-        return "{}, {}".format(
-            self.date, self.employee)
-
 class LayeredProcessAudit(models.Model):
     class Meta:
         unique_together = ("date", "shift", "workcell")
@@ -444,20 +431,14 @@ class LayeredProcessAudit(models.Model):
     weight_inspection = models.CharField(max_length=3, choices=YESNONA)
     chemicals_tracked = models.CharField(max_length=3, choices=YESNONA)
     components_tracked = models.CharField(max_length=3, choices=YESNONA)
-    leader_safety = models.ForeignKey(
-        LPASafety, related_name="leader_safety")
 
     setup_posted = models.CharField(max_length=3, choices=YESNONA)
     chemicals_correct = models.CharField(max_length=3, choices=YESNONA)
     event_missed_shot = models.CharField(max_length=3, choices=YESNONA)
-    shooter_safety = models.ForeignKey(
-        LPASafety, related_name="shooter_safety")
 
     demold_criteria = models.CharField(max_length=3, choices=YESNONA)
     demold_ncm = models.CharField(max_length=3, choices=YESNONA)
     mold_release = models.CharField(max_length=3, choices=YESNONA)
-    table_safety = models.ForeignKey(
-        LPASafety, related_name="table_safety")
 
     work_instructions = models.CharField(max_length=3, choices=YESNONA)
     proper_equipment = models.CharField(max_length=3, choices=YESNONA)
@@ -470,9 +451,11 @@ class LayeredProcessAudit(models.Model):
     labels_match = models.CharField(max_length=3, choices=YESNONA)
     fifo_product = models.CharField(max_length=3, choices=YESNONA)
     product_tracked = models.CharField(max_length=3, choices=YESNONA)
-    trim_safety = models.ForeignKey(
-        LPASafety, related_name="trim_safety")
 
+    ppe = models.CharField(max_length=3, choices=YESNONA[:2])
+    ppe_info = models.CharField(max_length=3, choices=YESNONA[:2])
+    sds = models.CharField(max_length=3, choices=YESNONA[:2])
+    iso_exposure = models.CharField(max_length=3, choices=YESNONA[:2])
     comments = models.TextField(max_length=1000, blank=True)
 
     def __str__(self):

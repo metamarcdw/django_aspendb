@@ -295,26 +295,6 @@ class ProcessActivityReportAdmin(admin.ModelAdmin):
     date_hierarchy = "date"
     ordering = ("date", "shift", "workcell")
 
-class LPASafetyForm(forms.ModelForm):
-    class Meta:
-        model = LPASafety
-        fields = "__all__"
-    ppe = get_radio_formfield(
-        "What is PPE?", YESNONA[:2])
-    ppe_info = get_radio_formfield(
-        "Where can you find information for " + \
-        "the PPE you must wear?", YESNONA[:2])
-    sds = get_radio_formfield(
-        "What is the SDS and where would you find it?", YESNONA[:2])
-    iso_exposure = get_radio_formfield(
-        "Are you ever exposed to isocyanate?", YESNONA[:2])
-class LPASafetyAdmin(admin.ModelAdmin):
-    form = LPASafetyForm
-    list_display = ("date", "employee")
-    list_filter = ("date",)
-    date_hierarchy = "date"
-    ordering = ("date",)
-
 
 class LayeredProcessAuditForm(forms.ModelForm):
     class Meta:
@@ -380,8 +360,52 @@ class LayeredProcessAuditForm(forms.ModelForm):
     product_tracked = get_radio_formfield(
         "Is final audit process correctly followed?", YESNONA)
 
+    ppe = get_radio_formfield(
+        "Do all employees know: What is PPE?", YESNONA[:2])
+    ppe_info = get_radio_formfield(
+        "Do all employees know: Where can you find " + \
+        "information for the PPE you must wear?", YESNONA[:2])
+    sds = get_radio_formfield(
+        "Do all employees know: What is the SDS " + \
+        "and where would you find it?", YESNONA[:2])
+    iso_exposure = get_radio_formfield(
+        "Do all employees know: Are you ever " + \
+        "exposed to isocyanate?", YESNONA[:2])
+
 class LayeredProcessAuditAdmin(admin.ModelAdmin):
     form = LayeredProcessAuditForm
+    fieldsets = (
+        ('Cell/Leader Questions:', {
+            'fields': ('verified_parameters', 
+                        'weight_inspection',
+                        'chemicals_tracked',
+                        'components_tracked',
+                        'setup_posted',
+                        'chemicals_correct'),
+        }),
+        ('Table Questions:', {
+            'fields': ('event_missed_shot',
+                        'demold_criteria',
+                        'demold_ncm',
+                        'mold_release'),
+        }),
+        ('Trim/Pack Questions:', {
+            'fields': ('work_instructions',
+                        'proper_equipment',
+                        'trim_criteria',
+                        'inspecting_prior',
+                        'trim_dcm',
+                        'quality_alerts',
+                        'boxes_marked',
+                        'pack_criteria',
+                        'labels_match',
+                        'fifo_product',
+                        'product_tracked'),
+        }),
+        ('Safety Questions:', {
+            'fields': ('ppe', 'ppe_info', 'sds', 'iso_exposure'),
+        }),
+    )
     list_display = ("workcell", "date", "shift", "employee")
     list_filter = ("date", "shift", "workcell")
     date_hierarchy = "date"
@@ -405,6 +429,5 @@ admin.site.register(SpotCheckReport, SpotCheckReportAdmin)
 admin.site.register(MaintenanceRecord, MaintenanceRecordAdmin)
 admin.site.register(MaintenanceRequest, MaintenanceRequestAdmin)
 admin.site.register(ProcessActivityReport, ProcessActivityReportAdmin)
-admin.site.register(LPASafety, LPASafetyAdmin)
 admin.site.register(LayeredProcessAudit, LayeredProcessAuditAdmin)
 
