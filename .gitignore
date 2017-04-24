@@ -82,3 +82,21 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+#eric6
+.eric6project/
+_eric6project/
+.eric5project/
+_eric5project/
+.eric4project/
+_eric4project/
+.ropeproject/
+_ropeproject/
+.directory/
+*.orig
+*.bak
+*.rej
+*~
+cur/
+tmp/
+*.DS_Store
