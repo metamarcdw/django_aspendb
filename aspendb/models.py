@@ -42,6 +42,10 @@ class Employee(models.Model):
 
 class Department(models.Model):
     name = models.CharField(max_length=30, primary_key=True)
+    representative_1st = models.ForeignKey(
+        Employee, related_name="representative_1st", blank=True, null=True)
+    representative_2nd = models.ForeignKey(
+        Employee, related_name="representative_2nd", blank=True, null=True)
 
     def __str__(self):
         return self.name
