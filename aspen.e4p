@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric project file for project aspen -->
-<!-- Saved: 2017-04-26, 13:35:31 -->
+<!-- Saved: 2017-04-26, 14:52:03 -->
 <!-- Copyright (C) 2017 Marc Wood, metamarcdw@gmail.com -->
 <Project version="5.1">
   <Language>en_US</Language>
@@ -47,6 +47,7 @@
     <Source>aspendb/migrations/0023_remove_endofshift_starting_shot.py</Source>
     <Source>aspendb/migrations/0024_auto_20170420_1418.py</Source>
     <Source>aspendb/migrations/0025_auto_20170426_1329.py</Source>
+    <Source>aspendb/migrations/0026_auto_20170426_1434.py</Source>
     <Source>aspendb/migrations/__init__.py</Source>
     <Source>aspendb/models.py</Source>
     <Source>aspendb/tests.py</Source>

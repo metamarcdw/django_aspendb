@@ -7,6 +7,11 @@ from aspendb.models import *
 admin.site.site_title = "Aspen Technologies Database"
 admin.site.site_header = "Aspen Technologies Database"
 
+FIRST_START = datetime.time(6, 0, 0)
+FIRST_END = datetime.time(16, 30, 0)
+SECOND_START = datetime.time(16, 30, 0)
+SECOND_END = datetime.time(3, 0, 0)
+
 def time_in_range(start, end, x):
     # Return true if x is in the range [start, end]
     if start <= end:
@@ -15,14 +20,10 @@ def time_in_range(start, end, x):
         return start <= x or x <= end
 
 def get_current_shift():
-    first_start = datetime.time(6, 0, 0)
-    first_end = datetime.time(16, 30, 0)
-    second_start = datetime.time(16, 30, 0)
-    second_end = datetime.time(3, 0, 0)
     now = tz.localize(datetime.datetime.now()).time()
-    if time_in_range(first_start, first_end, now):
+    if time_in_range(FIRST_START, FIRST_END, now):
         return SHIFTS[0][1]
-    elif time_in_range(second_start, second_end, now):
+    elif time_in_range(SECOND_START, SECOND_END, now):
         return SHIFTS[1][1]
     else:
         return ""
@@ -69,6 +70,17 @@ def get_initials_eos(self, request):
     total_scrap = sum(scrap_reports.values_list('total_scrap', flat=True))
     initials["total_scrap"] = total_scrap
 
+    return initials
+
+def get_initials_lr(self, request):
+    shift = get_current_shift()
+    initials = get_initials(self, request)
+    if shift == "1st":
+        initials["start_time"] = FIRST_START
+        initials["end_time"] = FIRST_END
+    elif shift == "2nd":
+        initials["start_time"] = SECOND_START
+        initials["end_time"] = SECOND_END
     return initials
 
 def get_radio_formfield(label, choices, initial=None):
@@ -210,6 +222,20 @@ class ScrapReportAdmin(admin.ModelAdmin):
                 "under_weight", "over_weight", "swollen",
                 "contamination", "total_scrap")
     list_display = ("part", "date", "shift", "workcell", "total_scrap")
+    list_filter = ("date",)
+    date_hierarchy = "date"
+    ordering = ("date", "shift", "workcell")
+
+class LaborReportForm(forms.ModelForm):
+    class Meta:
+        model = LaborReport
+        fields = "__all__"
+    shift = get_radio_formfield(None, SHIFTS, get_current_shift())
+class LaborReportAdmin(admin.ModelAdmin):
+    get_changeform_initial_data = get_initials_lr
+    form = LaborReportForm
+    exclude = ("man_hours",)
+    list_display = ("date", "shift", "workcell", "employee", "man_hours")
     list_filter = ("date",)
     date_hierarchy = "date"
     ordering = ("date", "shift", "workcell")
@@ -426,6 +452,7 @@ admin.site.register(ProductionSchedule, ProductionScheduleAdmin)
 admin.site.register(StartOfShift, StartOfShiftAdmin)
 admin.site.register(EndOfShift, EndOfShiftAdmin)
 admin.site.register(ScrapReport, ScrapReportAdmin)
+admin.site.register(LaborReport, LaborReportAdmin)
 admin.site.register(LaborAllocationReport, LaborAllocationReportAdmin)
 admin.site.register(Downtime, DowntimeAdmin)
 admin.site.register(SpotCheckReport, SpotCheckReportAdmin)

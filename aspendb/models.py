@@ -292,6 +292,32 @@ class ScrapReport(models.Model):
             self.date, self.shift,
             self.workcell.name, self.part.part_number)
 
+class LaborReport(models.Model):
+    class Meta:
+        unique_together = ("date", "shift", "workcell")
+
+    workcell = models.ForeignKey(Workcell)
+    date = models.DateField(
+        default=get_today, validators=[date_validator])
+    shift = models.CharField(max_length=3, choices=SHIFTS)
+
+    employee = models.ForeignKey(Employee)
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    man_hours = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def save(self, *args, **kwargs):
+        start_time = datetime.datetime.combine(self.date,  self.start_time)
+        end_time = datetime.datetime.combine(self.date,  self.end_time)
+        delta = end_time - start_time
+        self.man_hours = (delta.total_seconds() / 3600) - 0.5
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return "{}, {}, {}: {}".format(
+            self.date, self.shift,
+            self.workcell.name, self.employee)
+
 class LaborAllocationReport(models.Model):
     class Meta:
         unique_together = ("date", "shift", "workcell", "period")
