@@ -235,7 +235,7 @@ class LaborReportAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials_lr
     form = LaborReportForm
     exclude = ("man_hours",)
-    list_display = ("date", "shift", "workcell", "employee", "man_hours")
+    list_display = ("date", "shift", "workcell", "name", "man_hours")
     list_filter = ("date",)
     date_hierarchy = "date"
     ordering = ("date", "shift", "workcell")

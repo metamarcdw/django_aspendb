@@ -301,7 +301,7 @@ class LaborReport(models.Model):
         default=get_today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
-    employee = models.ForeignKey(Employee)
+    name = models.CharField(max_length=30)
     start_time = models.TimeField()
     end_time = models.TimeField()
     man_hours = models.DecimalField(max_digits=10, decimal_places=2)
@@ -316,7 +316,7 @@ class LaborReport(models.Model):
     def __str__(self):
         return "{}, {}, {}: {}".format(
             self.date, self.shift,
-            self.workcell.name, self.employee)
+            self.workcell.name, self.name)
 
 class LaborAllocationReport(models.Model):
     class Meta:
