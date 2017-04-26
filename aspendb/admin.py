@@ -405,6 +405,9 @@ class LayeredProcessAuditAdmin(admin.ModelAdmin):
         ('Safety Questions:', {
             'fields': ('ppe', 'ppe_info', 'sds', 'iso_exposure'),
         }),
+        ('Comments:', {
+            'fields': ('comments',),
+        }),
     )
     list_display = ("workcell", "date", "shift", "employee")
     list_filter = ("date", "shift", "workcell")
