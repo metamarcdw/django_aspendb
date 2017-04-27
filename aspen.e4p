@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric project file for project aspen -->
-<!-- Saved: 2017-04-26, 16:00:50 -->
+<!-- Saved: 2017-04-27, 13:11:27 -->
 <!-- Copyright (C) 2017 Marc Wood, metamarcdw@gmail.com -->
 <Project version="5.1">
   <Language>en_US</Language>
@@ -49,6 +49,7 @@
     <Source>aspendb/migrations/0025_auto_20170426_1329.py</Source>
     <Source>aspendb/migrations/0026_auto_20170426_1434.py</Source>
     <Source>aspendb/migrations/0027_auto_20170426_1555.py</Source>
+    <Source>aspendb/migrations/0028_auto_20170427_1307.py</Source>
     <Source>aspendb/migrations/__init__.py</Source>
     <Source>aspendb/models.py</Source>
     <Source>aspendb/tests.py</Source>

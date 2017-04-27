@@ -331,9 +331,9 @@ class LaborAllocationReport(models.Model):
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
     period = models.IntegerField(choices=ONETOFIVE)
-    shooter = models.ForeignKey(Employee, related_name="shooter")
-    puller = models.ForeignKey(Employee, related_name="puller")
-    sprayer = models.ForeignKey(Employee, related_name="sprayer")
+    shooter = models.CharField(max_length=30)
+    puller = models.CharField(max_length=30)
+    sprayer = models.CharField(max_length=30)
 
     def __str__(self):
         return "{}, {}, {}: {}".format(
