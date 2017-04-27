@@ -309,6 +309,8 @@ class LaborReport(models.Model):
     def save(self, *args, **kwargs):
         start_time = datetime.datetime.combine(self.date,  self.start_time)
         end_time = datetime.datetime.combine(self.date,  self.end_time)
+        if start_time > end_time:
+            end_time += datetime.timedelta(days=1)
         delta = end_time - start_time
         self.man_hours = (delta.total_seconds() / 3600) - 0.5
         super().save(*args, **kwargs)
