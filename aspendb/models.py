@@ -206,9 +206,7 @@ class EndOfShift(models.Model):
     scrap_labeled = models.CharField(max_length=3, choices=YESNONA[:2])
     cabinet_stocked = models.CharField(max_length=3, choices=YESNONA)
     pot_grounded = models.CharField(max_length=3, choices=YESNONA)
-    employee_count = models.IntegerField(
-        validators=[MinValueValidator(1)],
-        verbose_name="Number of employees positioned here")
+    total_manhrs = models.DecimalField(max_digits=5, decimal_places=2)
     comments = models.TextField(max_length=1000, blank=True)
 
     total_shots = models.IntegerField()

@@ -70,6 +70,13 @@ def get_initials_eos(self, request):
     total_scrap = sum(scrap_reports.values_list('total_scrap', flat=True))
     initials["total_scrap"] = total_scrap
 
+    labor_reports = LaborReport.objects.filter(
+        date=today).filter(
+        shift=shift).filter(
+        workcell=initials["workcell"])
+    total_manhrs = sum(labor_reports.values_list('man_hours', flat=True))
+    initials["total_manhrs"] = total_manhrs
+
     return initials
 
 def get_initials_lr(self, request):
@@ -190,7 +197,6 @@ class EndOfShiftForm(forms.ModelForm):
         "Are all supplies in cell leader cabinet stocked?", YESNONA)
     pot_grounded = get_radio_formfield(
         "Is spray pot ground connected?", YESNONA)
-    employee_count = get_integer_formfield()
 
 class EndOfShiftAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials_eos
