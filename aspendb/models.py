@@ -18,6 +18,27 @@ ONETOFIVE = ((1, "1"),
             (4, "4"),
             (5, "5"))
 
+FIRST_START = datetime.time(6, 0, 0)
+FIRST_END = datetime.time(16, 30, 0)
+SECOND_START = datetime.time(16, 30, 0)
+SECOND_END = datetime.time(3, 0, 0)
+
+def time_in_range(start, end, x):
+    # Return true if x is in the range [start, end]
+    if start <= end:
+        return start <= x <= end
+    else:
+        return start <= x or x <= end
+
+def get_current_shift():
+    now = tz.localize(datetime.datetime.now()).time()
+    if time_in_range(FIRST_START, FIRST_END, now):
+        return SHIFTS[0][1]
+    elif time_in_range(SECOND_START, SECOND_END, now):
+        return SHIFTS[1][1]
+    else:
+        return ""
+
 def get_today():
     return tz.localize(datetime.datetime.now()).date()
 
@@ -416,6 +437,36 @@ class MaintenanceRequest(models.Model):
     record = models.ForeignKey(MaintenanceRecord, blank=True, null=True)
     status = models.CharField(max_length=30,
         choices=STATUS, default=STATUS[0][0])
+
+    def send_maintenance_request_emails(self):
+        rep = None
+        email_list = []
+        if self.status == STATUS[0][0]:
+            import smtplib
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+            server.login("aspendb.sendmail", "bigboobz")
+
+            maint_dept = Department.objects.get(name="Maintenance")
+            shift = get_current_shift()
+            if shift == "1st":
+                rep = maint_dept.representative_1st
+            elif shift == "2nd":
+                rep = maint_dept.representative_2nd
+            if rep:
+                email_list.append(rep.email)
+
+            url = "http://192.168.1.200/admin/aspendb/maintenancerequest/"
+            msg = "\nThere has been a maintenance request:\n" + url
+
+            for email in email_list:
+                server.sendmail("aspendb.sendmail@gmail.com", email, msg)
+
+    def save(self, *args, **kwargs):
+        self.send_maintenance_request_emails()
+        super().save(*args, **kwargs)
 
     def __str_(self):
         return "{}, {}: {}".format(

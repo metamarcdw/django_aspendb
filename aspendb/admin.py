@@ -1,32 +1,9 @@
-import datetime
-
 from django.contrib import admin
 from django import forms
 from aspendb.models import *
 
 admin.site.site_title = "Aspen Technologies Database"
 admin.site.site_header = "Aspen Technologies Database"
-
-FIRST_START = datetime.time(6, 0, 0)
-FIRST_END = datetime.time(16, 30, 0)
-SECOND_START = datetime.time(16, 30, 0)
-SECOND_END = datetime.time(3, 0, 0)
-
-def time_in_range(start, end, x):
-    # Return true if x is in the range [start, end]
-    if start <= end:
-        return start <= x <= end
-    else:
-        return start <= x or x <= end
-
-def get_current_shift():
-    now = tz.localize(datetime.datetime.now()).time()
-    if time_in_range(FIRST_START, FIRST_END, now):
-        return SHIFTS[0][1]
-    elif time_in_range(SECOND_START, SECOND_END, now):
-        return SHIFTS[1][1]
-    else:
-        return ""
 
 def get_my_workcell(request):
     if request.user.is_authenticated():
