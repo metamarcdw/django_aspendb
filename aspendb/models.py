@@ -291,9 +291,6 @@ class ScrapReport(models.Model):
             self.workcell.name, self.part.part_number)
 
 class LaborReport(models.Model):
-    class Meta:
-        unique_together = ("date", "shift", "workcell")
-
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
         default=get_today, validators=[date_validator])
