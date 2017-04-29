@@ -440,7 +440,7 @@ class MaintenanceRequest(models.Model):
 
     def send_maintenance_request_emails(self):
         rep = None
-        email_list = []
+        email_list = ["krichardson@aspen-tech.net", "jkendrick@aspen-tech.net"]
         if self.status == STATUS[0][0]:
             import smtplib
             server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -465,7 +465,7 @@ class MaintenanceRequest(models.Model):
                 server.sendmail("aspendb.sendmail@gmail.com", email, msg)
 
     def save(self, *args, **kwargs):
-        self.send_maintenance_request_emails()
+#        self.send_maintenance_request_emails()
         super().save(*args, **kwargs)
 
     def __str_(self):
