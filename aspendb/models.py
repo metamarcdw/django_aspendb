@@ -447,7 +447,7 @@ class MaintenanceRequest(models.Model):
             server.ehlo()
             server.starttls()
             server.ehlo()
-            server.login("aspendb.sendmail", "bigboobz")
+            server.login("aspendb.sendmail", "Aspen123")
 
             maint_dept = Department.objects.get(name="Maintenance")
             shift = get_current_shift()
