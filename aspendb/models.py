@@ -22,6 +22,10 @@ FIRST_START = datetime.time(6, 0, 0)
 FIRST_END = datetime.time(16, 30, 0)
 SECOND_START = datetime.time(16, 30, 0)
 SECOND_END = datetime.time(3, 0, 0)
+LUNCH_FIRST_START = datetime.time(12, 0, 0)
+LUNCH_FIRST_END = datetime.time(12, 30, 0)
+LUNCH_SECOND_START = datetime.time(21, 0, 0)
+LUNCH_SECOND_END = datetime.time(21, 30, 0)
 
 def time_in_range(start, end, x):
     # Return true if x is in the range [start, end]
@@ -328,7 +332,15 @@ class LaborReport(models.Model):
         if start_time > end_time:
             end_time += datetime.timedelta(days=1)
         delta = end_time - start_time
-        self.man_hours = (delta.total_seconds() / 3600) - 0.5
+        self.man_hours = (delta.total_seconds() / 3600)
+        if self.shift == "1st":
+            if self.start_time <= LUNCH_FIRST_START and \
+                    self.end_time >= LUNCH_FIRST_END:
+                self.man_hours -= 0.5
+        elif self.shift == "2nd":
+            if self.start_time <= LUNCH_SECOND_START and \
+                    self.end_time >= LUNCH_SECOND_END:
+                self.man_hours -= 0.5
         super().save(*args, **kwargs)
 
     def __str__(self):
