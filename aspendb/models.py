@@ -452,34 +452,37 @@ class MaintenanceRequest(models.Model):
         choices=STATUS, default=STATUS[0][0])
 
     def send_maintenance_request_emails(self):
-        rep = None
+        if self.status != STATUS[0][0]:
+            return
+
         email_list = ["krichardson@aspen-tech.net",
                         "jkendrick@aspen-tech.net"]
-        if self.status == STATUS[0][0]:
-            gmail_user = "aspendb.sendmail"
-            gmail_password = "Aspen123"
-            
-            server = smtplib.SMTP('smtp.gmail.com', 587)
-            server.ehlo()
-            server.starttls()
-            server.ehlo()
-            server.login(gmail_user, gmail_password)
 
-            maint_dept = Department.objects.get(name="Maintenance")
-            shift = get_current_shift()
-            if shift == "1st":
-                rep = maint_dept.representative_1st
-            elif shift == "2nd":
-                rep = maint_dept.representative_2nd
-            if rep:
-                email_list.append(rep.email)
+        gmail_user = "aspendb.sendmail"
+        gmail_password = "Aspen123"
 
-            url = "http://192.168.1.200/admin/aspendb/maintenancerequest/"
-            msg = "".join(["\nThere has been a maintenance request:\n",
-                url, str(self.id)])
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.ehlo()
+        server.starttls()
+        server.ehlo()
+        server.login(gmail_user, gmail_password)
 
-            for email in email_list:
-                server.sendmail(gmail_user + "@gmail.com", email, msg)
+        rep = None
+        maint_dept = Department.objects.get(name="Maintenance")
+        shift = get_current_shift()
+        if shift == "1st":
+            rep = maint_dept.representative_1st
+        elif shift == "2nd":
+            rep = maint_dept.representative_2nd
+        if rep:
+            email_list.append(rep.email)
+
+        url = "http://192.168.1.200/admin/aspendb/maintenancerequest/"
+        msg = "".join(["\nThere has been a maintenance request:\n",
+            url, str(self.id)])
+
+        for email in email_list:
+            server.sendmail(gmail_user + "@gmail.com", email, msg)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
