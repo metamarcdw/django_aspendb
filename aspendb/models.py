@@ -1,4 +1,5 @@
 import re
+import smtplib
 import datetime, pytz
 
 from django.db import models
@@ -452,14 +453,17 @@ class MaintenanceRequest(models.Model):
 
     def send_maintenance_request_emails(self):
         rep = None
-        email_list = ["krichardson@aspen-tech.net", "jkendrick@aspen-tech.net"]
+        email_list = ["krichardson@aspen-tech.net",
+                        "jkendrick@aspen-tech.net"]
         if self.status == STATUS[0][0]:
-            import smtplib
+            gmail_user = "aspendb.sendmail"
+            gmail_password = "Aspen123"
+            
             server = smtplib.SMTP('smtp.gmail.com', 587)
             server.ehlo()
             server.starttls()
             server.ehlo()
-            server.login("aspendb.sendmail", "Aspen123")
+            server.login(gmail_user, gmail_password)
 
             maint_dept = Department.objects.get(name="Maintenance")
             shift = get_current_shift()
@@ -471,14 +475,15 @@ class MaintenanceRequest(models.Model):
                 email_list.append(rep.email)
 
             url = "http://192.168.1.200/admin/aspendb/maintenancerequest/"
-            msg = "\nThere has been a maintenance request:\n" + url
+            msg = "".join(["\nThere has been a maintenance request:\n",
+                url, str(self.id)])
 
             for email in email_list:
-                server.sendmail("aspendb.sendmail@gmail.com", email, msg)
+                server.sendmail(gmail_user + "@gmail.com", email, msg)
 
     def save(self, *args, **kwargs):
-#        self.send_maintenance_request_emails()
         super().save(*args, **kwargs)
+        self.send_maintenance_request_emails()
 
     def __str_(self):
         return "{}, {}: {}".format(
