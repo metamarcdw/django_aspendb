@@ -330,18 +330,22 @@ class LaborReport(models.Model):
     def save(self, *args, **kwargs):
         start_time = datetime.datetime.combine(self.date,  self.start_time)
         end_time = datetime.datetime.combine(self.date,  self.end_time)
+        lunch_2nd_end = datetime.datetime.combine(self.date, LUNCH_SECOND_END)
+
         if start_time > end_time:
             end_time += datetime.timedelta(days=1)
         delta = end_time - start_time
         self.man_hours = (delta.total_seconds() / 3600)
+
         if self.shift == "1st":
             if self.start_time <= LUNCH_FIRST_START and \
                     self.end_time >= LUNCH_FIRST_END:
                 self.man_hours -= 0.5
         elif self.shift == "2nd":
             if self.start_time <= LUNCH_SECOND_START and \
-                    self.end_time >= LUNCH_SECOND_END:
+                    end_time >= lunch_2nd_end:
                 self.man_hours -= 0.5
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -486,7 +490,7 @@ class MaintenanceRequest(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.send_maintenance_request_emails()
+#        self.send_maintenance_request_emails()
 
     def __str_(self):
         return "{}, {}: {}".format(
