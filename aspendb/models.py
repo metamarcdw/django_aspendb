@@ -343,8 +343,8 @@ class LaborReport(models.Model):
                 self.man_hours -= 0.5
         elif self.shift == "2nd":
             if self.start_time <= LUNCH_SECOND_START and \
-                    end_time >= lunch_2nd_end:
-                self.man_hours -= 0.5
+                    end_time >= lunch_2nd_end:  # Use date-aware objects,
+                self.man_hours -= 0.5   # because 2nd shift ends (before) lunch
 
         super().save(*args, **kwargs)
 
