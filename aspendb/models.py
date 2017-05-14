@@ -302,13 +302,16 @@ class ScrapReport(models.Model):
             d[s.strip()] = int(i.strip())
         return d
 
-    def save(self, *args, **kwargs):
+    def save_scrap_numbers(self):
         d = ScrapReport.scrap_dict(self.numbers)
         for key, value in d.items():
             key = key.replace(" ", "_")
             assert getattr(self, key) is not None
             setattr(self, key, value)
         self.total_scrap = sum(d.values())
+
+    def save(self, *args, **kwargs):
+        self.save_scrap_numbers()
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -327,7 +330,7 @@ class LaborReport(models.Model):
     end_time = models.TimeField()
     man_hours = models.DecimalField(max_digits=10, decimal_places=2)
 
-    def save(self, *args, **kwargs):
+    def calculate_manhrs(self):
         start_time = datetime.datetime.combine(self.date,  self.start_time)
         end_time = datetime.datetime.combine(self.date,  self.end_time)
         lunch_2nd_end = datetime.datetime.combine(self.date, LUNCH_SECOND_END)
@@ -335,17 +338,20 @@ class LaborReport(models.Model):
         if start_time > end_time:
             end_time += datetime.timedelta(days=1)
         delta = end_time - start_time
-        self.man_hours = (delta.total_seconds() / 3600)
+        man_hours = (delta.total_seconds() / 3600)
 
         if self.shift == "1st":
             if self.start_time <= LUNCH_FIRST_START and \
                     self.end_time >= LUNCH_FIRST_END:
-                self.man_hours -= 0.5
+                man_hours -= 0.5
         elif self.shift == "2nd":
             if self.start_time <= LUNCH_SECOND_START and \
                     end_time >= lunch_2nd_end:  # Use date-aware objects,
-                self.man_hours -= 0.5   # because 2nd shift ends (before) lunch
+                man_hours -= 0.5   # because 2nd shift ends (before) lunch
+        return man_hours
 
+    def save(self, *args, **kwargs):
+        self.man_hours = self.calculate_manhrs()
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -483,10 +489,10 @@ class MaintenanceRequest(models.Model):
 
         url = "http://192.168.1.200/admin/aspendb/maintenancerequest/"
         msg = "".join(["\nThere has been a maintenance request:\n",
-            url, str(self.id)])
+            url, str(self.id), "/change/"])
 
         for email in email_list:
-            server.sendmail(gmail_user + "@gmail.com", email, msg)
+            server.sendmail(f"{gmail_user}@gmail.com", email, msg)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

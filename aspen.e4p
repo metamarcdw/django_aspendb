@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric project file for project aspen -->
-<!-- Saved: 2017-04-28, 22:54:32 -->
+<!-- Saved: 2017-05-13, 21:51:25 -->
 <!-- Copyright (C) 2017 Marc Wood, metamarcdw@gmail.com -->
 <Project version="5.1">
   <Language>en_US</Language>
@@ -192,4 +192,23 @@
     <FiletypeAssociation pattern="README" type="OTHERS"/>
     <FiletypeAssociation pattern="README.*" type="OTHERS"/>
   </FiletypeAssociations>
+  <OtherTools>
+    <OtherToolsParams>
+      <dict>
+        <key>
+          <string>CodeMetrics</string>
+        </key>
+        <value>
+          <dict>
+            <key>
+              <string>ExcludeFiles</string>
+            </key>
+            <value>
+              <string>*migrations*</string>
+            </value>
+          </dict>
+        </value>
+      </dict>
+    </OtherToolsParams>
+  </OtherTools>
 </Project>
