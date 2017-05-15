@@ -330,7 +330,7 @@ class LaborReport(models.Model):
     end_time = models.TimeField()
     man_hours = models.DecimalField(max_digits=10, decimal_places=2)
 
-    def calculate_manhrs(self):
+    def get_manhrs(self):
         start_time = datetime.datetime.combine(self.date,  self.start_time)
         end_time = datetime.datetime.combine(self.date,  self.end_time)
         lunch_2nd_end = datetime.datetime.combine(self.date, LUNCH_SECOND_END)
@@ -351,7 +351,7 @@ class LaborReport(models.Model):
         return man_hours
 
     def save(self, *args, **kwargs):
-        self.man_hours = self.calculate_manhrs()
+        self.man_hours = self.get_manhrs()
         super().save(*args, **kwargs)
 
     def __str__(self):
