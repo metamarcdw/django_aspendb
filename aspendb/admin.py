@@ -109,7 +109,7 @@ class ProductionScheduleAdmin(admin.ModelAdmin):
     list_display = ("part", "shots", "date", "shift", "workcell")
     list_filter = ("date", "shift", "workcell")
     date_hierarchy = "date"
-    ordering = ("date", "shift", "workcell")
+    ordering = ("-date", "shift", "workcell")
 
 
 class StartOfShiftForm(forms.ModelForm):
@@ -148,7 +148,7 @@ class StartOfShiftAdmin(admin.ModelAdmin):
     list_display = ("date", "shift", "workcell")
     list_filter = ("date",)
     date_hierarchy = "date"
-    ordering = ("date", "shift")
+    ordering = ("-date", "shift")
 
 
 class EndOfShiftForm(forms.ModelForm):
@@ -183,7 +183,7 @@ class EndOfShiftAdmin(admin.ModelAdmin):
         "date", "shift", "workcell", "_oee", "_scrap_percent")
     list_filter = ("date",)
     date_hierarchy = "date"
-    ordering = ("date", "shift")
+    ordering = ("-date", "shift")
 
     def _oee(self, obj):
         return "{}%".format(obj.oee)
@@ -207,7 +207,7 @@ class ScrapReportAdmin(admin.ModelAdmin):
     list_display = ("part", "date", "shift", "workcell", "total_scrap")
     list_filter = ("date",)
     date_hierarchy = "date"
-    ordering = ("date", "shift", "workcell")
+    ordering = ("-date", "shift", "workcell")
 
 class LaborReportForm(forms.ModelForm):
     class Meta:
@@ -221,7 +221,7 @@ class LaborReportAdmin(admin.ModelAdmin):
     list_display = ("date", "shift", "workcell", "name", "man_hours")
     list_filter = ("date",)
     date_hierarchy = "date"
-    ordering = ("date", "shift", "workcell")
+    ordering = ("-date", "shift", "workcell")
 
 class LaborAllocationReportForm(forms.ModelForm):
     class Meta:
@@ -235,7 +235,7 @@ class LaborAllocationReportAdmin(admin.ModelAdmin):
     list_display = ("date", "shift", "workcell", "period")
     list_filter = ("date",)
     date_hierarchy = "date"
-    ordering = ("date", "shift", "workcell")
+    ordering = ("-date", "shift", "workcell")
 
 class DowntimeForm(forms.ModelForm):
     class Meta:
@@ -248,7 +248,7 @@ class DowntimeAdmin(admin.ModelAdmin):
     list_display = ("date", "shift", "workcell", "code")
     list_filter = ("date",)
     date_hierarchy = "date"
-    ordering = ("date", "shift", "workcell")
+    ordering = ("-date", "shift", "workcell")
 
 class SpotCheckReportForm(forms.ModelForm):
     class Meta:
@@ -261,7 +261,7 @@ class SpotCheckReportAdmin(admin.ModelAdmin):
     list_display = ("date", "shift", "workcell", "part")
     list_filter = ("date",)
     date_hierarchy = "date"
-    ordering = ("date", "shift", "workcell")
+    ordering = ("-date", "shift", "workcell")
 
 class MaintenanceRecordForm(forms.ModelForm):
     class Meta:
@@ -274,7 +274,7 @@ class MaintenanceRecordAdmin(admin.ModelAdmin):
     list_display = ("date_performed", "problem_code", "work_done")
     list_filter = ("date_performed", "problem_code")
     date_hierarchy = "date_performed"
-    ordering = ("date_performed", "problem_code")
+    ordering = ("-date_performed", "problem_code")
 
 class MaintenanceRequestForm(forms.ModelForm):
     class Meta:
@@ -288,7 +288,7 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
     list_display = ("date", "shift", "problem", "status")
     list_filter = ("date",)
     date_hierarchy = "date"
-    ordering = ("date",)
+    ordering = ("-date",)
 
 class ProcessActivityReportForm(forms.ModelForm):
     class Meta:
@@ -302,7 +302,7 @@ class ProcessActivityReportAdmin(admin.ModelAdmin):
     list_display = ("process_change", "date", "shift", "workcell")
     list_filter = ("date", "shift", "workcell")
     date_hierarchy = "date"
-    ordering = ("date", "shift", "workcell")
+    ordering = ("-date", "shift", "workcell")
 
 
 class LayeredProcessAuditForm(forms.ModelForm):
@@ -421,7 +421,7 @@ class LayeredProcessAuditAdmin(admin.ModelAdmin):
     list_display = ("workcell", "date", "shift", "employee")
     list_filter = ("date", "shift", "workcell")
     date_hierarchy = "date"
-    ordering = ("date", "shift", "workcell")
+    ordering = ("-date", "shift", "workcell")
 
 
 # Register your models here.
