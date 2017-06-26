@@ -138,6 +138,7 @@ class DowntimeCode(models.Model):
 YESNONA = ( ('yes', 'Yes'),
             ('no', 'No'),
             ('na', 'N/A'))
+YESNO = YESNONA[:2]
 
 class ProductionSchedule(models.Model):
     workcell = models.ForeignKey(Workcell)
@@ -175,8 +176,8 @@ class StartOfShift(models.Model):
         default=get_today, validators=[date_validator])
     shift = models.CharField(max_length=3, choices=SHIFTS)
 
-    process_verified = models.CharField(max_length=3, choices=YESNONA[:2])
-    weights_verified = models.CharField(max_length=3, choices=YESNONA[:2])
+    process_verified = models.CharField(max_length=3, choices=YESNO)
+    weights_verified = models.CharField(max_length=3, choices=YESNO)
 
     starting_shot = models.IntegerField(validators=[MinValueValidator(0)])
     mix_ratio = models.FloatField(
@@ -196,15 +197,15 @@ class StartOfShift(models.Model):
 
     adequate_components = models.CharField(max_length=3, choices=YESNONA)
     airhose_secure = models.CharField(max_length=3, choices=YESNONA)
-    poly_agitator = models.CharField(max_length=3, choices=YESNONA[:2])
+    poly_agitator = models.CharField(max_length=3, choices=YESNO)
     chemical_tracked = models.CharField(max_length=3, choices=YESNONA)
 
     poly_date = models.DateField()
     iso_date = models.DateField()
 
-    stands_labels = models.CharField(max_length=3, choices=YESNONA[:2])
-    new_product = models.CharField(max_length=3, choices=YESNONA[:2])
-    opposite_parts = models.CharField(max_length=3, choices=YESNONA[:2])
+    stands_labels = models.CharField(max_length=3, choices=YESNO)
+    new_product = models.CharField(max_length=3, choices=YESNO)
+    opposite_parts = models.CharField(max_length=3, choices=YESNO)
 
     def __str__(self):
         return "{}, {}, {}".format(
@@ -226,10 +227,10 @@ class EndOfShift(models.Model):
     total_scrap = models.IntegerField(validators=[MinValueValidator(0)])
 
     spray_pots = models.CharField(max_length=3, choices=YESNONA)
-    adequate_poly = models.CharField(max_length=3, choices=YESNONA[:2])
-    adequate_iso = models.CharField(max_length=3, choices=YESNONA[:2])
+    adequate_poly = models.CharField(max_length=3, choices=YESNO)
+    adequate_iso = models.CharField(max_length=3, choices=YESNO)
     replacement_poly = models.CharField(max_length=3, choices=YESNONA)
-    scrap_labeled = models.CharField(max_length=3, choices=YESNONA[:2])
+    scrap_labeled = models.CharField(max_length=3, choices=YESNO)
     cabinet_stocked = models.CharField(max_length=3, choices=YESNONA)
     pot_grounded = models.CharField(max_length=3, choices=YESNONA)
     total_manhrs = models.DecimalField(max_digits=5, decimal_places=2)
@@ -436,7 +437,7 @@ class MaintenanceRecord(models.Model):
     workcell_downtime = models.IntegerField(
         validators=[MinValueValidator(0)])
 
-    parts_used = models.CharField(max_length=3, choices=YESNONA[:2])
+    parts_used = models.CharField(max_length=3, choices=YESNO)
     parts_reordered = models.CharField(max_length=3, choices=YESNONA)
     parts_cost = models.DecimalField(
         max_digits=10, decimal_places=2, default=0)
@@ -517,7 +518,7 @@ class ProcessActivityReport(models.Model):
     defect = models.CharField(max_length=20, blank=True)
     process_change = models.CharField(max_length=50)
     effect = models.IntegerField(choices=ONETOFIVE)
-    change_reverted = models.CharField(max_length=3, choices=YESNONA[:2])
+    change_reverted = models.CharField(max_length=3, choices=YESNO)
     comments = models.TextField(max_length=1000, blank=True)
 
     def __str__(self):
@@ -560,10 +561,10 @@ class LayeredProcessAudit(models.Model):
     fifo_product = models.CharField(max_length=3, choices=YESNONA)
     product_tracked = models.CharField(max_length=3, choices=YESNONA)
 
-    ppe = models.CharField(max_length=3, choices=YESNONA[:2])
-    ppe_info = models.CharField(max_length=3, choices=YESNONA[:2])
-    sds = models.CharField(max_length=3, choices=YESNONA[:2])
-    iso_exposure = models.CharField(max_length=3, choices=YESNONA[:2])
+    ppe = models.CharField(max_length=3, choices=YESNO)
+    ppe_info = models.CharField(max_length=3, choices=YESNO)
+    sds = models.CharField(max_length=3, choices=YESNO)
+    iso_exposure = models.CharField(max_length=3, choices=YESNO)
     comments = models.TextField(max_length=1000, blank=True)
 
     def __str__(self):

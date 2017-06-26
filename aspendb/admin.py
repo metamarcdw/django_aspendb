@@ -121,26 +121,26 @@ class StartOfShiftForm(forms.ModelForm):
     poly_pressure = get_integer_formfield()
     iso_pressure = get_integer_formfield()
     process_verified = get_radio_formfield(
-        "Process parameters verified?", YESNONA[:2])
+        "Process parameters verified?", YESNO)
     weights_verified = get_radio_formfield(
-        "Shot weights verified?", YESNONA[:2])
+        "Shot weights verified?", YESNO)
     adequate_components = get_radio_formfield(
         "Is there an adequate supply of components?", YESNONA)
     airhose_secure = get_radio_formfield(
         "Are all air hose nozzles secure?", YESNONA)
     poly_agitator = get_radio_formfield(
-        "Is poly agitator functioning?", YESNONA[:2])
+        "Is poly agitator functioning?", YESNO)
     chemical_tracked = get_radio_formfield(
         "Is poly/iso recorded in lot tracking book?", YESNONA)
     stands_labels = get_radio_formfield(
         "Are all pack stands/pack instructions " + \
-        "& barcode labels in place?", YESNONA[:2])
+        "& barcode labels in place?", YESNO)
     new_product = get_radio_formfield(
         "Are there any NEW production parts " + \
-        "scheduled to run today?", YESNONA[:2])
+        "scheduled to run today?", YESNO)
     opposite_parts = get_radio_formfield(
         "Are the NEW parts - symetrically opposite " + \
-        "parts on the same turntable?", YESNONA[:2])
+        "parts on the same turntable?", YESNO)
 
 class StartOfShiftAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials
@@ -163,13 +163,13 @@ class EndOfShiftForm(forms.ModelForm):
     spray_pots = get_radio_formfield(
         "Is your spray pot topped off?", YESNONA)
     adequate_poly = get_radio_formfield(
-        "Is there an adequate supply of poly?", YESNONA[:2])
+        "Is there an adequate supply of poly?", YESNO)
     adequate_iso = get_radio_formfield(
-        "Is there an adequate supply of iso?", YESNONA[:2])
+        "Is there an adequate supply of iso?", YESNO)
     replacement_poly = get_radio_formfield(
         "Is replacement poly agitating?", YESNONA)
     scrap_labeled = get_radio_formfield(
-        "Is all scrap properly labeled?", YESNONA[:2])
+        "Is all scrap properly labeled?", YESNO)
     cabinet_stocked = get_radio_formfield(
         "Are all supplies in cell leader cabinet stocked?", YESNONA)
     pot_grounded = get_radio_formfield(
@@ -267,7 +267,7 @@ class MaintenanceRecordForm(forms.ModelForm):
     class Meta:
         model = MaintenanceRecord
         fields = "__all__"
-    parts_used = get_radio_formfield(None, YESNONA[:2])
+    parts_used = get_radio_formfield(None, YESNO)
     parts_reordered = get_radio_formfield(None, YESNONA)
 class MaintenanceRecordAdmin(admin.ModelAdmin):
     form = MaintenanceRecordForm
@@ -296,7 +296,7 @@ class ProcessActivityReportForm(forms.ModelForm):
         fields = "__all__"
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
     effect = get_radio_formfield(None, ONETOFIVE, ONETOFIVE[2][1])
-    change_reverted = get_radio_formfield(None, YESNONA[:2])
+    change_reverted = get_radio_formfield(None, YESNO)
 class ProcessActivityReportAdmin(admin.ModelAdmin):
     form = ProcessActivityReportForm
     list_display = ("process_change", "date", "shift", "workcell")
@@ -370,16 +370,16 @@ class LayeredProcessAuditForm(forms.ModelForm):
         "Is final audit process correctly followed?", YESNONA)
 
     ppe = get_radio_formfield(
-        "Do all employees know: What is PPE?", YESNONA[:2])
+        "Do all employees know: What is PPE?", YESNO)
     ppe_info = get_radio_formfield(
         "Do all employees know: Where can you find " + \
-        "information for the PPE you must wear?", YESNONA[:2])
+        "information for the PPE you must wear?", YESNO)
     sds = get_radio_formfield(
         "Do all employees know: What is the SDS " + \
-        "and where would you find it?", YESNONA[:2])
+        "and where would you find it?", YESNO)
     iso_exposure = get_radio_formfield(
         "Do all employees know: Are you ever " + \
-        "exposed to isocyanate?", YESNONA[:2])
+        "exposed to isocyanate?", YESNO)
 
 class LayeredProcessAuditAdmin(admin.ModelAdmin):
     form = LayeredProcessAuditForm
