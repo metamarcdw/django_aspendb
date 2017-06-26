@@ -269,6 +269,14 @@ class ScrapReport(models.Model):
     class Meta:
         unique_together = ("date", "shift", "workcell", "part")
 
+    def scrap_numbers_validator(value):
+        d = ScrapReport.scrap_dict(value)
+        for key, value in d.items():
+            u_key = key.replace(" ", "_")
+            if not hasattr(ScrapReport, u_key):
+                raise forms.ValidationError(
+                    f"There is no defect called '{key}'!")
+
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
@@ -293,7 +301,8 @@ class ScrapReport(models.Model):
     contamination = models.IntegerField(default=0)
 
     total_scrap = models.IntegerField()
-    numbers = models.TextField(max_length = 1000)
+    numbers = models.TextField(
+        max_length = 1000,  validators=[scrap_numbers_validator])
 
     @staticmethod
     def scrap_dict(txt):
@@ -307,7 +316,6 @@ class ScrapReport(models.Model):
         d = ScrapReport.scrap_dict(self.numbers)
         for key, value in d.items():
             key = key.replace(" ", "_")
-            assert getattr(self, key) is not None
             setattr(self, key, value)
         self.total_scrap = sum(d.values())
 
