@@ -178,9 +178,9 @@ class EndOfShiftForm(forms.ModelForm):
 class EndOfShiftAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials_eos
     form = EndOfShiftForm
-    exclude = ("total_shots", "oee", "scrap_percent")
+    exclude = ("total_shots", "oee", "scrap_percent", "labor_per_pc")
     list_display = (
-        "date", "shift", "workcell", "_oee", "_scrap_percent")
+        "date", "shift", "workcell", "_oee", "_scrap_percent", "labor_per_pc")
     list_filter = ("date",)
     date_hierarchy = "date"
     ordering = ("-date", "shift")

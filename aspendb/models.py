@@ -233,12 +233,14 @@ class EndOfShift(models.Model):
     scrap_labeled = models.CharField(max_length=3, choices=YESNO)
     cabinet_stocked = models.CharField(max_length=3, choices=YESNONA)
     pot_grounded = models.CharField(max_length=3, choices=YESNONA)
-    total_manhrs = models.DecimalField(max_digits=5, decimal_places=2)
+    total_manhrs = models.DecimalField(
+        max_digits=5, decimal_places=2, validators=[MinValueValidator(0.1)])
     comments = models.TextField(max_length=1000, blank=True)
 
     total_shots = models.IntegerField()
     oee = models.DecimalField(max_digits=5, decimal_places=2)
     scrap_percent = models.DecimalField(max_digits=5, decimal_places=2)
+    labor_per_pc = models.DecimalField(max_digits=5, decimal_places=2)
 
     def get_total_shots(self):
         sos = StartOfShift.objects.filter(
@@ -255,10 +257,14 @@ class EndOfShift(models.Model):
     def get_scrap_percent(self):
         return (self.total_scrap / self.total_shots) * 100
 
+    def get_labor_per_pc(self):
+        return self.total_manhrs / (self.total_shots - self.total_scrap)
+
     def save(self, *args, **kwargs):
         self.total_shots = self.get_total_shots()
         self.oee = self.get_oee()
         self.scrap_percent = self.get_scrap_percent()
+        self.labor_per_pc = self.get_labor_per_pc()
         super().save(*args, **kwargs)
 
     def __str__(self):
