@@ -240,7 +240,7 @@ class EndOfShift(models.Model):
     total_shots = models.IntegerField()
     oee = models.DecimalField(max_digits=5, decimal_places=2)
     scrap_percent = models.DecimalField(max_digits=5, decimal_places=2)
-    labor_per_pc = models.DecimalField(max_digits=5, decimal_places=2)
+    labor_per_pc = models.DecimalField(max_digits=5, decimal_places=4)
 
     def get_total_shots(self):
         sos = StartOfShift.objects.filter(
@@ -281,7 +281,7 @@ class ScrapReport(models.Model):
             u_key = key.replace(" ", "_")
             if not hasattr(ScrapReport, u_key):
                 raise forms.ValidationError(
-                    f"There is no defect called '{key}'!")
+                    "There is no defect called '{0}'!".format(key))
 
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
@@ -507,7 +507,7 @@ class MaintenanceRequest(models.Model):
             url, str(self.id), "/change/"])
 
         for email in email_list:
-            server.sendmail(f"{gmail_user}@gmail.com", email, msg)
+            server.sendmail("".join(gmail_user, "@gmail.com"), email, msg)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)

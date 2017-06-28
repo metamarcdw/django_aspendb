@@ -10,11 +10,11 @@ class Migration(migrations.Migration):
     def recalculate_labor_per_pc(apps, schema_editor):
         Eos = apps.get_model('aspendb', 'EndOfShift')
         for eos in Eos.objects.all():
-            if eos.total_manhrs > 0:
-                eos.save()
+            eos.labor_per_pc = eos.total_manhrs / (eos.total_shots - eos.total_scrap)
+            eos.save()
 
     dependencies = [
-        ('aspendb', '0033_auto_20170625_2009'),
+        ('aspendb', '0034_auto_20170626_1858'),
     ]
 
     operations = [
