@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-5.1.dtd">
 <!-- eric project file for project aspen -->
-<!-- Saved: 2017-06-25, 20:22:07 -->
+<!-- Saved: 2017-07-03, 02:13:08 -->
 <!-- Copyright (C) 2017 Marc Wood, metamarcdw@gmail.com -->
 <Project version="5.1">
   <Language>en_US</Language>
@@ -55,11 +55,14 @@
     <Source>aspendb/migrations/0031_remove_endofshift_employee_count.py</Source>
     <Source>aspendb/migrations/0032_auto_20170428_2249.py</Source>
     <Source>aspendb/migrations/0033_auto_20170625_2009.py</Source>
-    <Source>aspendb/migrations/0034_auto_20170625_2009.py</Source>
+    <Source>aspendb/migrations/0034_auto_20170626_1858.py</Source>
+    <Source>aspendb/migrations/0035_auto_20170625_2009.py</Source>
     <Source>aspendb/migrations/__init__.py</Source>
     <Source>aspendb/models.py</Source>
     <Source>aspendb/tests.py</Source>
     <Source>aspendb/views.py</Source>
+    <Source>fill_ids_migration.py</Source>
+    <Source>migrate_json.py</Source>
   </Sources>
   <Forms/>
   <Translations/>

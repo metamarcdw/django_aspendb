@@ -19,11 +19,11 @@ def replace_pks(item, pk_name):
     item["fields"][pk_name] = item["pk"]
     item["pk"] = pk
     return item
-    
+
 def main():
     global cache
     new_list = list()
-    
+
     with open("db.json") as json_data:
         data_list = json.load(json_data)
 
@@ -40,7 +40,7 @@ def main():
                 cache[model][d["pk"]] = d["fields"]["id"]
             except KeyError:
                 print(d)
-        
+
         if model in name_models:
             d = replace_pks(d, "name")
         elif model == "part":
@@ -68,15 +68,15 @@ def main():
         elif model == "processactivityreport":
             d = replace_fks(d, "workcell")
             d = replace_fks(d, "part", nullable=True)
-            
+
         new_list.append(d)
 
-    with open('new_db.json', 'wt') as out:
-        res = json.dump(new_list,
-                        out,
-                        sort_keys=True,
-                        indent=4,
-                        separators=(',', ': '))
+    with open("new_db.json", "wt") as out:
+        json.dump(new_list,
+                    out,
+                    sort_keys=True,
+                    indent=4,
+                    separators=(",", ": "))
 
 
 if __name__ == "__main__":
