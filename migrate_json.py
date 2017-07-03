@@ -36,10 +36,7 @@ def main():
         if model not in cache:
             cache[model] = dict()
         if "id" in d["fields"]:
-            try:
-                cache[model][d["pk"]] = d["fields"]["id"]
-            except KeyError:
-                print(d)
+            cache[model][d["pk"]] = d["fields"]["id"]
 
         if model in name_models:
             d = replace_pks(d, "name")
