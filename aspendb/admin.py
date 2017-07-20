@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django import forms
+from django.utils.html import format_html
 from aspendb.models import *
 
 admin.site.site_title = "Aspen Technologies Database"
@@ -186,10 +187,24 @@ class EndOfShiftAdmin(admin.ModelAdmin):
     ordering = ("-date", "shift")
 
     def _oee(self, obj):
-        return "{}%".format(obj.oee)
+        if 95 <= obj.oee <= 100:
+            result = format_html(
+                        '<span style="color: green;">{}%</span>', obj.oee)
+        else:
+            result = format_html(
+                        '<span style="color: red;">{}%</span>', obj.oee)
+        return result
 
     def _scrap_percent(self, obj):
-        return "{}%".format(obj.scrap_percent)
+        if obj.scrap_percent <= 5:
+            result = format_html(
+                        '<span style="color: green;">{}%</span>',
+                        obj.scrap_percent)
+        else:
+            result = format_html(
+                        '<span style="color: red;">{}%</span>',
+                        obj.scrap_percent)
+        return result
 
 
 class ScrapReportForm(forms.ModelForm):
