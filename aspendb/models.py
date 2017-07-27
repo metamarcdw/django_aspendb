@@ -67,7 +67,7 @@ class Employee(models.Model):
         return "{} {}".format(self.first_name, self.last_name)
 
 class Department(models.Model):
-    name = models.CharField(max_length=30, primary_key=True)
+    name = models.CharField(max_length=30)
     representative_1st = models.ForeignKey(
         Employee, related_name="representative_1st", blank=True, null=True)
     representative_2nd = models.ForeignKey(
@@ -77,7 +77,7 @@ class Department(models.Model):
         return self.name
 
 class Program(models.Model):
-    name = models.CharField(max_length=30, primary_key=True)
+    name = models.CharField(max_length=30)
 
     def __str__(self):
         return self.name
@@ -90,8 +90,7 @@ def nospace_validator(value):
 class Workcell(models.Model):
     name = models.CharField(
         max_length=30,
-        validators=[nospace_validator],
-        primary_key=True)
+        validators=[nospace_validator])
     foam_system = models.CharField(max_length=30)
     table_time_minutes = models.IntegerField(default=0,
         validators=[MaxValueValidator(10), MinValueValidator(0)])
@@ -119,7 +118,7 @@ class Workcell(models.Model):
         return self.name
 
 class Part(models.Model):
-    part_number = models.CharField(max_length=30, primary_key=True)
+    part_number = models.CharField(max_length=30)
     program = models.ForeignKey(Program)
     workcell = models.ForeignKey(Workcell)
 
@@ -128,8 +127,7 @@ class Part(models.Model):
 
 class DowntimeCode(models.Model):
     code = models.IntegerField(
-        validators=[MaxValueValidator(518), MinValueValidator(101)],
-        primary_key=True)
+        validators=[MaxValueValidator(518), MinValueValidator(101)])
     description = models.CharField(max_length=30)
 
     def __str__(self):
