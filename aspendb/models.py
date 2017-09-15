@@ -36,6 +36,10 @@ def time_in_range(start, end, x):
         return start <= x or x <= end
 
 def get_current_shift():
+    override = TimeOverride.objects.get(pk=1)
+    if override.overrides_enabled == YESNO[0][0]:
+        return SHIFTS[0][1] if override.shift == SHIFTS[0][0] else SHIFTS[1][1]
+
     now = tz.localize(datetime.datetime.now()).time()
     if time_in_range(FIRST_START, FIRST_END, now):
         return SHIFTS[0][1]
@@ -45,6 +49,10 @@ def get_current_shift():
         return ""
 
 def get_today():
+    override = TimeOverride.objects.get(pk=1)
+    if override.overrides_enabled == YESNO[0][0]:
+        return override.date
+
     return tz.localize(datetime.datetime.now()).date()
 
 def date_validator(value):
@@ -582,4 +590,9 @@ class LayeredProcessAudit(models.Model):
     def __str__(self):
         return "{}, {}, {}".format(
             self.date, self.shift, self.workcell.name)
+
+class TimeOverride(models.Model):
+    overrides_enabled = models.CharField(max_length=3, choices=YESNO)
+    shift = models.CharField(max_length=3, choices=SHIFTS)
+    date = models.DateField(default=get_today)
 

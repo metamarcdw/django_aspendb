@@ -24,10 +24,10 @@ def get_initials(self, request):
             leader = my_workcell.cell_leader_1st
         elif shift == "2nd":
             leader = my_workcell.cell_leader_2nd
-        workcell_name = my_workcell.name
+        workcell_id = my_workcell.id
 
     return {'employee': leader, 'created_by': leader,
-            'workcell': workcell_name}
+            'workcell': workcell_id}
 
 def get_initials_eos(self, request):
     today = get_today()
@@ -438,6 +438,8 @@ class LayeredProcessAuditAdmin(admin.ModelAdmin):
     date_hierarchy = "date"
     ordering = ("-date", "shift", "workcell")
 
+class TimeOverrideAdmin(admin.ModelAdmin):
+    list_display = ("overrides_enabled", "shift", "date")
 
 # Register your models here.
 admin.site.register(Employee, EmployeeAdmin)
@@ -458,4 +460,5 @@ admin.site.register(MaintenanceRecord, MaintenanceRecordAdmin)
 admin.site.register(MaintenanceRequest, MaintenanceRequestAdmin)
 admin.site.register(ProcessActivityReport, ProcessActivityReportAdmin)
 admin.site.register(LayeredProcessAudit, LayeredProcessAuditAdmin)
+admin.site.register(TimeOverride, TimeOverrideAdmin)
 
