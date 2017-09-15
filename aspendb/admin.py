@@ -215,10 +215,11 @@ class ScrapReportForm(forms.ModelForm):
 class ScrapReportAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials
     form = ScrapReportForm
-    exclude = ("bad_mix", "dents", "mold_release", "non_fill",
-                "collapse", "tears", "trim", "voilds", "open_voilds",
-                "under_weight", "over_weight", "swollen",
-                "contamination", "total_scrap")
+    exclude = ("numbers", "total_scrap")
+#    exclude = ("bad_mix", "dents", "mold_release", "non_fill",
+#                "collapse", "tears", "trim", "voilds", "open_voilds",
+#                "under_weight", "over_weight", "swollen",
+#                "contamination", "total_scrap")
     list_display = ("part", "date", "shift", "workcell", "total_scrap")
     list_filter = ("date",)
     date_hierarchy = "date"

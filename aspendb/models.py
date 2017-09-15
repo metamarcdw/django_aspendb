@@ -313,7 +313,7 @@ class ScrapReport(models.Model):
     contamination = models.IntegerField(default=0)
 
     total_scrap = models.IntegerField()
-    numbers = models.TextField(
+    numbers = models.TextField(blank=True,
         max_length = 1000,  validators=[scrap_numbers_validator])
 
     @staticmethod
