@@ -37,8 +37,8 @@ def time_in_range(start, end, x):
 
 def get_current_shift():
     override = TimeOverride.objects.get(pk=1)
-    if override.overrides_enabled == YESNO[0][0]:
-        return SHIFTS[0][1] if override.shift == SHIFTS[0][0] else SHIFTS[1][1]
+    if override.overrides_enabled == "yes":
+        return override.shift
 
     now = tz.localize(datetime.datetime.now()).time()
     if time_in_range(FIRST_START, FIRST_END, now):
@@ -50,7 +50,7 @@ def get_current_shift():
 
 def get_today():
     override = TimeOverride.objects.get(pk=1)
-    if override.overrides_enabled == YESNO[0][0]:
+    if override.overrides_enabled == "yes":
         return override.date
 
     return tz.localize(datetime.datetime.now()).date()

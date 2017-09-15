@@ -438,7 +438,14 @@ class LayeredProcessAuditAdmin(admin.ModelAdmin):
     date_hierarchy = "date"
     ordering = ("-date", "shift", "workcell")
 
+class TimeOverrideForm(forms.ModelForm):
+    class Meta:
+        model = TimeOverride
+        fields = "__all__"
+    overrides_enabled = get_radio_formfield(None, YESNO)
+    shift = get_radio_formfield(None, SHIFTS)
 class TimeOverrideAdmin(admin.ModelAdmin):
+    form = TimeOverrideForm
     list_display = ("overrides_enabled", "shift", "date")
 
 # Register your models here.
