@@ -332,7 +332,12 @@ class ScrapReport(models.Model):
         self.total_scrap = sum(d.values())
 
     def save(self, *args, **kwargs):
-        self.save_scrap_numbers()
+#        self.save_scrap_numbers()
+        scrap = [self.bad_mix, self.dents, self.mold_release, self.non_fill,
+                self.collapse, self.tears, self.trim, self.voilds,
+                self.open_voilds, self.under_weight, self.over_weight,
+                self.swollen, self.contamination]
+        self.total_scrap = sum(scrap)
         super().save(*args, **kwargs)
 
     def __str__(self):
