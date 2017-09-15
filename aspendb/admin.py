@@ -15,7 +15,7 @@ def get_my_workcell(request):
 
 def get_initials(self, request):
     leader = ""
-    workcell_name = ""
+    workcell_id = ""
 
     my_workcell = get_my_workcell(request)
     if my_workcell:
