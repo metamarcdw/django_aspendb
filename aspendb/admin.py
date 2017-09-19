@@ -105,6 +105,7 @@ class ProductionScheduleForm(forms.ModelForm):
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
     shots = get_integer_formfield()
 class ProductionScheduleAdmin(admin.ModelAdmin):
+    get_changeform_initial_data = get_initials
     form = ProductionScheduleForm
     exclude = ("total_shots",)
     list_display = ("part", "shots", "date", "shift", "workcell")
