@@ -14,8 +14,8 @@ def get_my_workcell(request):
             return Workcell.objects.get(name=username)
 
 def get_initials(self, request):
-    leader = ""
-    workcell_id = ""
+    leader = None
+    workcell_id = None
 
     my_workcell = get_my_workcell(request)
     if my_workcell:
@@ -37,21 +37,21 @@ def get_initials_eos(self, request):
     schedules = ProductionSchedule.objects.filter(
         date=today).filter(
         shift=shift).filter(
-        workcell__name=initials["workcell"])
+        workcell=initials["workcell"])
     total_shots = sum(schedules.values_list('total_shots', flat=True))
     initials["scheduled_shots"] = total_shots
 
     scrap_reports = ScrapReport.objects.filter(
         date=today).filter(
         shift=shift).filter(
-        workcell__name=initials["workcell"])
+        workcell=initials["workcell"])
     total_scrap = sum(scrap_reports.values_list('total_scrap', flat=True))
     initials["total_scrap"] = total_scrap
 
     labor_reports = LaborReport.objects.filter(
         date=today).filter(
         shift=shift).filter(
-        workcell__name=initials["workcell"])
+        workcell=initials["workcell"])
     total_manhrs = sum(labor_reports.values_list('man_hours', flat=True))
     initials["total_manhrs"] = total_manhrs
 
