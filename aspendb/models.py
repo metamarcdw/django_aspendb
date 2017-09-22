@@ -11,6 +11,8 @@ from smart_selects.db_fields import ChainedForeignKey
 
 tz = pytz.timezone("America/Chicago")
 
+PLANTS = (  ("brighton", "Brighton, MI"),
+            ("manchester", "Manchester, TN"))
 SHIFTS = (  ("1st", "1st"),
             ("2nd", "2nd"))
 ONETOFIVE = ((1, "1"),
@@ -63,6 +65,7 @@ class Employee(models.Model):
     class Meta:
         unique_together = ("first_name", "last_name")
 
+    plant = models.CharField(max_length=10)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=40)
     hire_date = models.DateField(
@@ -96,6 +99,7 @@ def nospace_validator(value):
             "The workcell name cannot contain spaces.")
 
 class Workcell(models.Model):
+    plant = models.CharField(max_length=10)
     name = models.CharField(
         max_length=30,
         validators=[nospace_validator])
@@ -147,6 +151,7 @@ YESNONA = ( ('yes', 'Yes'),
 YESNO = YESNONA[:2]
 
 class ProductionSchedule(models.Model):
+    plant = models.CharField(max_length=10)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
         default=get_today, validators=[date_validator])
@@ -176,6 +181,7 @@ class StartOfShift(models.Model):
     class Meta:
         unique_together = ("date", "shift", "workcell")
 
+    plant = models.CharField(max_length=10)
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
@@ -221,6 +227,7 @@ class EndOfShift(models.Model):
     class Meta:
         unique_together = ("date", "shift", "workcell")
 
+    plant = models.CharField(max_length=10)
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
@@ -289,6 +296,7 @@ class ScrapReport(models.Model):
                 raise forms.ValidationError(
                     "There is no defect called '{0}'!".format(key))
 
+    plant = models.CharField(max_length=10)
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
@@ -346,6 +354,7 @@ class ScrapReport(models.Model):
             self.workcell.name, self.part.part_number)
 
 class LaborReport(models.Model):
+    plant = models.CharField(max_length=10)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
         default=get_today, validators=[date_validator])
@@ -386,6 +395,7 @@ class LaborReport(models.Model):
             self.workcell.name, self.name)
 
 class Downtime(models.Model):
+    plant = models.CharField(max_length=10)
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
@@ -400,6 +410,7 @@ class Downtime(models.Model):
             self.date, self.shift, self.workcell.name)
 
 class SpotCheckReport(models.Model):
+    plant = models.CharField(max_length=10)
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
@@ -431,6 +442,7 @@ MAINT_CODES = ( ("mech", "Mechanical"),
                 ("chem", "Chemical"))
 
 class MaintenanceRecord(models.Model):
+    plant = models.CharField(max_length=10)
     employee = models.ForeignKey(
         Employee, verbose_name="Work performed by")
     date_performed = models.DateField(
@@ -452,6 +464,7 @@ class MaintenanceRecord(models.Model):
             self.date_performed, self.problem_code, self.work_done)
 
 class MaintenanceRequest(models.Model):
+    plant = models.CharField(max_length=10)
     created_by = models.ForeignKey(Employee, related_name="created_by")
     workcell = models.ForeignKey(Workcell, blank=True, null=True)
     date = models.DateField(
@@ -509,6 +522,7 @@ class MaintenanceRequest(models.Model):
             self.date, self.workcell.name, self.problem)
 
 class ProcessActivityReport(models.Model):
+    plant = models.CharField(max_length=10)
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(
@@ -535,6 +549,7 @@ class LayeredProcessAudit(models.Model):
     class Meta:
         unique_together = ("date", "shift", "workcell")
 
+    plant = models.CharField(max_length=10)
     employee = models.ForeignKey(Employee)
     workcell = models.ForeignKey(Workcell)
     date = models.DateField(

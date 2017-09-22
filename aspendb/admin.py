@@ -80,17 +80,24 @@ class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
         fields = "__all__"
+    plant = get_radio_formfield(None, PLANTS, "manchester")
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
     training_level = get_radio_formfield(None, ONETOFIVE)
 class EmployeeAdmin(admin.ModelAdmin):
     form = EmployeeForm
-    list_display = ("first_name", "last_name", "shift", "email")
+    list_display = ("first_name", "last_name", "plant", "shift", "email")
     search_fields = ("first_name", "last_name")
-    ordering = ("last_name", "first_name")
+    ordering = ("plant", "last_name", "first_name")
 
+class WorkcellForm(forms.ModelForm):
+    class Meta:
+        model = Workcell
+        fields = "__all__"
+    plant = get_radio_formfield(None, PLANTS, "manchester")
 class WorkcellAdmin(admin.ModelAdmin):
-    list_display = ("name", "foam_system", "turns_per_hour")
-    ordering = ("name",)
+    form = WorkcellForm
+    list_display = ("name", "plant", "foam_system", "turns_per_hour")
+    ordering = ("plant", "name")
 
 class PartAdmin(admin.ModelAdmin):
     list_display = ("part_number", "program_name")
@@ -102,22 +109,24 @@ class ProductionScheduleForm(forms.ModelForm):
     class Meta:
         model = ProductionSchedule
         fields = "__all__"
+    plant = get_radio_formfield(None, PLANTS, "manchester")
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
     shots = get_integer_formfield()
 class ProductionScheduleAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials
     form = ProductionScheduleForm
     exclude = ("total_shots",)
-    list_display = ("part", "shots", "date", "shift", "workcell")
+    list_display = ("part", "shots", "date", "plant", "shift", "workcell")
     list_filter = ("date", "shift", "workcell")
     date_hierarchy = "date"
-    ordering = ("-date", "shift", "workcell")
+    ordering = ("-date", "plant", "shift", "workcell")
 
 
 class StartOfShiftForm(forms.ModelForm):
     class Meta:
         model = StartOfShift
         fields = "__all__"
+    plant = get_radio_formfield(None, PLANTS, "manchester")
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
     starting_shot = get_integer_formfield(initial=0)
     poly_pressure = get_integer_formfield()
@@ -147,16 +156,17 @@ class StartOfShiftForm(forms.ModelForm):
 class StartOfShiftAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials
     form = StartOfShiftForm
-    list_display = ("date", "shift", "workcell")
+    list_display = ("date", "plant", "shift", "workcell")
     list_filter = ("date",)
     date_hierarchy = "date"
-    ordering = ("-date", "shift")
+    ordering = ("-date", "plant", "shift")
 
 
 class EndOfShiftForm(forms.ModelForm):
     class Meta:
         model = EndOfShift
         fields = "__all__"
+    plant = get_radio_formfield(None, PLANTS, "manchester")
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
     ending_shot = get_integer_formfield()
     scheduled_shots = get_integer_formfield()
@@ -181,11 +191,11 @@ class EndOfShiftAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials_eos
     form = EndOfShiftForm
     exclude = ("total_shots", "oee", "scrap_percent", "labor_per_pc")
-    list_display = (
-        "date", "shift", "workcell", "_oee", "_scrap_percent", "labor_per_pc")
+    list_display = ("date", "plant", "shift", "workcell", "_oee",
+                    "_scrap_percent", "labor_per_pc")
     list_filter = ("date",)
     date_hierarchy = "date"
-    ordering = ("-date", "shift")
+    ordering = ("-date", "plant", "shift")
 
     def _oee(self, obj):
         if 95 <= obj.oee <= 100:
@@ -212,6 +222,7 @@ class ScrapReportForm(forms.ModelForm):
     class Meta:
         model = ScrapReport
         fields = "__all__"
+    plant = get_radio_formfield(None, PLANTS, "manchester")
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
 class ScrapReportAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials
@@ -221,97 +232,104 @@ class ScrapReportAdmin(admin.ModelAdmin):
 #                "collapse", "tears", "trim", "voilds", "open_voilds",
 #                "under_weight", "over_weight", "swollen",
 #                "contamination", "total_scrap")
-    list_display = ("part", "date", "shift", "workcell", "total_scrap")
+    list_display = ("part", "plant", "date", "shift", "workcell", "total_scrap")
     list_filter = ("date",)
     date_hierarchy = "date"
-    ordering = ("-date", "shift", "workcell")
+    ordering = ("-date", "plant", "shift", "workcell")
 
 class LaborReportForm(forms.ModelForm):
     class Meta:
         model = LaborReport
         fields = "__all__"
+    plant = get_radio_formfield(None, PLANTS, "manchester")
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
 class LaborReportAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials_lr
     form = LaborReportForm
     exclude = ("man_hours",)
-    list_display = ("date", "shift", "workcell", "name", "man_hours")
+    list_display = ("date", "plant", "shift", "workcell", "name", "man_hours")
     list_filter = ("date",)
     date_hierarchy = "date"
-    ordering = ("-date", "shift", "workcell")
+    ordering = ("-date", "plant", "shift", "workcell")
 
 class DowntimeForm(forms.ModelForm):
     class Meta:
         model = Downtime
         fields = "__all__"
+    plant = get_radio_formfield(None, PLANTS, "manchester")
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
 class DowntimeAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials
     form = DowntimeForm
-    list_display = ("date", "shift", "workcell", "code")
+    list_display = ("date", "plant", "shift", "workcell", "code")
     list_filter = ("date",)
     date_hierarchy = "date"
-    ordering = ("-date", "shift", "workcell")
+    ordering = ("-date", "plant", "shift", "workcell")
 
 class SpotCheckReportForm(forms.ModelForm):
     class Meta:
         model = SpotCheckReport
         fields = "__all__"
+    plant = get_radio_formfield(None, PLANTS, "manchester")
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
 class SpotCheckReportAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials
     form = SpotCheckReportForm
-    list_display = ("date", "shift", "workcell", "part")
+    list_display = ("date", "plant", "shift", "workcell", "part")
     list_filter = ("date",)
     date_hierarchy = "date"
-    ordering = ("-date", "shift", "workcell")
+    ordering = ("-date", "plant", "shift", "workcell")
 
 class MaintenanceRecordForm(forms.ModelForm):
     class Meta:
         model = MaintenanceRecord
         fields = "__all__"
+    plant = get_radio_formfield(None, PLANTS, "manchester")
     parts_used = get_radio_formfield(None, YESNO)
     parts_reordered = get_radio_formfield(None, YESNONA)
 class MaintenanceRecordAdmin(admin.ModelAdmin):
     form = MaintenanceRecordForm
-    list_display = ("date_performed", "problem_code", "work_done")
+    list_display = ("date_performed", "plant", "problem_code", "work_done")
     list_filter = ("date_performed", "problem_code")
     date_hierarchy = "date_performed"
-    ordering = ("-date_performed", "problem_code")
+    ordering = ("-date_performed", "plant", "problem_code")
 
 class MaintenanceRequestForm(forms.ModelForm):
     class Meta:
         model = MaintenanceRequest
         fields = "__all__"
+    plant = get_radio_formfield(None, PLANTS, "manchester")
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
     urgency = get_radio_formfield(None, ONETOFIVE)
 class MaintenanceRequestAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials
     form = MaintenanceRequestForm
-    list_display = ("date", "shift", "problem", "status")
+    list_display = ("date", "plant", "shift", "problem", "status")
     list_filter = ("date",)
     date_hierarchy = "date"
-    ordering = ("-date",)
+    ordering = ("-date", "plant", "shift")
 
 class ProcessActivityReportForm(forms.ModelForm):
     class Meta:
         model = ProcessActivityReport
         fields = "__all__"
+    plant = get_radio_formfield(None, PLANTS, "manchester")
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
     effect = get_radio_formfield(None, ONETOFIVE, ONETOFIVE[2][1])
     change_reverted = get_radio_formfield(None, YESNO)
 class ProcessActivityReportAdmin(admin.ModelAdmin):
     form = ProcessActivityReportForm
-    list_display = ("process_change", "date", "shift", "workcell")
+    list_display = ("process_change", "date", "plant", "shift", "workcell")
     list_filter = ("date", "shift", "workcell")
     date_hierarchy = "date"
-    ordering = ("-date", "shift", "workcell")
+    ordering = ("-date", "plant", "shift", "workcell")
 
 
 class LayeredProcessAuditForm(forms.ModelForm):
     class Meta:
         model = LayeredProcessAudit
         fields = "__all__"
+    plant = get_radio_formfield(None, PLANTS, "manchester")
     shift = get_radio_formfield(None, SHIFTS, get_current_shift())
     verified_parameters = get_radio_formfield(
         "Has team leader verified that the processing parameters on " + \
@@ -421,10 +439,10 @@ class LayeredProcessAuditAdmin(admin.ModelAdmin):
             'fields': ('comments',),
         }),
     )
-    list_display = ("workcell", "date", "shift", "employee")
+    list_display = ("workcell", "date", "plant", "shift", "employee")
     list_filter = ("date", "shift", "workcell")
     date_hierarchy = "date"
-    ordering = ("-date", "shift", "workcell")
+    ordering = ("-date", "plant", "shift", "workcell")
 
 class TimeOverrideForm(forms.ModelForm):
     class Meta:
