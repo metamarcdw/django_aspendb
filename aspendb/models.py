@@ -314,7 +314,7 @@ class ScrapReport(models.Model):
 
     total_scrap = models.IntegerField()
     numbers = models.TextField(blank=True,
-        max_length = 1000,  validators=[scrap_numbers_validator])
+        max_length = 1000, validators=[scrap_numbers_validator])
 
     @staticmethod
     def scrap_dict(txt):
@@ -384,26 +384,6 @@ class LaborReport(models.Model):
         return "{}, {}, {}: {}".format(
             self.date, self.shift,
             self.workcell.name, self.name)
-
-class LaborAllocationReport(models.Model):
-    class Meta:
-        unique_together = ("date", "shift", "workcell", "period")
-
-    employee = models.ForeignKey(Employee)
-    workcell = models.ForeignKey(Workcell)
-    date = models.DateField(
-        default=get_today, validators=[date_validator])
-    shift = models.CharField(max_length=3, choices=SHIFTS)
-
-    period = models.IntegerField(choices=ONETOFIVE)
-    shooter = models.CharField(max_length=30)
-    puller = models.CharField(max_length=30)
-    sprayer = models.CharField(max_length=30)
-
-    def __str__(self):
-        return "{}, {}, {}: {}".format(
-            self.date, self.shift,
-            self.workcell.name, self.period)
 
 class Downtime(models.Model):
     employee = models.ForeignKey(Employee)

@@ -240,20 +240,6 @@ class LaborReportAdmin(admin.ModelAdmin):
     date_hierarchy = "date"
     ordering = ("-date", "shift", "workcell")
 
-class LaborAllocationReportForm(forms.ModelForm):
-    class Meta:
-        model = LaborAllocationReport
-        fields = "__all__"
-    shift = get_radio_formfield(None, SHIFTS, get_current_shift())
-    period = get_radio_formfield(None, ONETOFIVE)
-class LaborAllocationReportAdmin(admin.ModelAdmin):
-    get_changeform_initial_data = get_initials
-    form = LaborAllocationReportForm
-    list_display = ("date", "shift", "workcell", "period")
-    list_filter = ("date",)
-    date_hierarchy = "date"
-    ordering = ("-date", "shift", "workcell")
-
 class DowntimeForm(forms.ModelForm):
     class Meta:
         model = Downtime
@@ -462,7 +448,6 @@ admin.site.register(StartOfShift, StartOfShiftAdmin)
 admin.site.register(EndOfShift, EndOfShiftAdmin)
 admin.site.register(ScrapReport, ScrapReportAdmin)
 admin.site.register(LaborReport, LaborReportAdmin)
-admin.site.register(LaborAllocationReport, LaborAllocationReportAdmin)
 admin.site.register(Downtime, DowntimeAdmin)
 admin.site.register(SpotCheckReport, SpotCheckReportAdmin)
 admin.site.register(MaintenanceRecord, MaintenanceRecordAdmin)
