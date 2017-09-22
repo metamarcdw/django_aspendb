@@ -187,6 +187,19 @@ class EndOfShiftForm(forms.ModelForm):
     pot_grounded = get_radio_formfield(
         "Is spray pot ground connected?", YESNONA)
 
+    def clean(self):
+        cleaned_data = super().clean()
+        date = cleaned_data.get("date")
+        shift = cleaned_data.get("shift")
+        workcell = cleaned_data.get("workcell")
+        sos = StartOfShift.objects.filter(
+            date=date).filter(
+            shift=shift).filter(
+            workcell=workcell)
+        if not sos:
+            raise forms.ValidationError(
+                        "No StartOfShift entry recorded for this workcell.")
+
 class EndOfShiftAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials_eos
     form = EndOfShiftForm

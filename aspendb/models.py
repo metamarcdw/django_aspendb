@@ -260,8 +260,6 @@ class EndOfShift(models.Model):
             date=self.date).filter(
             shift=self.shift).filter(
             workcell=self.workcell)
-        if not sos:
-            raise Exception("No StartOfShift entry recorded for this workcell.")
         return self.ending_shot - sos[0].starting_shot
 
     def get_oee(self):
