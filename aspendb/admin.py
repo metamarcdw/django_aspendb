@@ -157,7 +157,7 @@ class StartOfShiftAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials
     form = StartOfShiftForm
     list_display = ("date", "plant", "shift", "workcell")
-    list_filter = ("date",)
+    list_filter = ("date", "shift")
     date_hierarchy = "date"
     ordering = ("-date", "plant", "shift")
 
@@ -206,7 +206,7 @@ class EndOfShiftAdmin(admin.ModelAdmin):
     exclude = ("total_shots", "oee", "scrap_percent", "labor_per_pc")
     list_display = ("date", "plant", "shift", "workcell", "_oee",
                     "_scrap_percent", "labor_per_pc")
-    list_filter = ("date",)
+    list_filter = ("date", "shift")
     date_hierarchy = "date"
     ordering = ("-date", "plant", "shift")
 
@@ -246,7 +246,7 @@ class ScrapReportAdmin(admin.ModelAdmin):
 #                "under_weight", "over_weight", "swollen",
 #                "contamination", "total_scrap")
     list_display = ("part", "plant", "date", "shift", "workcell", "total_scrap")
-    list_filter = ("date",)
+    list_filter = ("date", "shift", "workcell")
     date_hierarchy = "date"
     ordering = ("-date", "plant", "shift", "workcell")
 
@@ -261,7 +261,7 @@ class LaborReportAdmin(admin.ModelAdmin):
     form = LaborReportForm
     exclude = ("man_hours",)
     list_display = ("date", "plant", "shift", "workcell", "name", "man_hours")
-    list_filter = ("date",)
+    list_filter = ("date", "shift", "workcell")
     date_hierarchy = "date"
     ordering = ("-date", "plant", "shift", "workcell")
 
@@ -275,7 +275,7 @@ class DowntimeAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials
     form = DowntimeForm
     list_display = ("date", "plant", "shift", "workcell", "code")
-    list_filter = ("date",)
+    list_filter = ("date", "shift", "workcell")
     date_hierarchy = "date"
     ordering = ("-date", "plant", "shift", "workcell")
 
@@ -289,7 +289,7 @@ class SpotCheckReportAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials
     form = SpotCheckReportForm
     list_display = ("date", "plant", "shift", "workcell", "part")
-    list_filter = ("date",)
+    list_filter = ("date", "shift", "workcell")
     date_hierarchy = "date"
     ordering = ("-date", "plant", "shift", "workcell")
 
@@ -318,7 +318,7 @@ class MaintenanceRequestAdmin(admin.ModelAdmin):
     get_changeform_initial_data = get_initials
     form = MaintenanceRequestForm
     list_display = ("date", "plant", "shift", "problem", "status")
-    list_filter = ("date",)
+    list_filter = ("date", "shift", "workcell")
     date_hierarchy = "date"
     ordering = ("-date", "plant", "shift")
 
